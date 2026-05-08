@@ -1,0 +1,27 @@
+{% extends 'layouts/auth.html' %}
+{% block title %}Daftar - SIMK{% endblock %}
+
+{% block left_title %}Bergabung bersama<br><span class="font-semibold">tim klinik Anda</span>{% endblock %}
+{% block left_desc %}Buat akun untuk mulai mengakses sistem manajemen klinik terintegrasi.{% endblock %}
+
+{% block auth_content %}
+<div class="mb-8">
+  <h2 class="text-2xl font-semibold text-slate-900 tracking-tight">Buat akun baru</h2>
+  <p class="text-slate-500 text-sm mt-1">Lengkapi data berikut untuk mendaftar</p>
+</div>
+
+<form method="POST">
+  {% csrf_token %}
+  {% include "components/ui/input.html" with label="Nama Lsengkap" name="full_name" type="text" placeholder="Masukkan nama lengkap" required=True %}
+  {% include "components/ui/input.html" with label="Username" name="username" type="text" placeholder="Masukkan username" required=True %}
+  {% include "components/ui/input.html" with label="Email" name="email" type="email" placeholder="Masukkan email" required=True %}
+  {% include "components/ui/input.html" with label="Password" name="password1" type="password" placeholder="Masukkan password" required=True %}
+  {% include "components/ui/input.html" with label="Konfirmasi Password" name="password2" type="password" placeholder="Ulangi password" required=True %}
+
+  {% include "components/ui/button.html" with label="Buat Akun" type="submit" variant="primary" class="w-full justify-center" %}
+</form>
+
+<p class="text-center text-xs text-slate-500 mt-6">
+  Sudah punya akun? <a href="{% url 'login' %}" class="text-sky-500 font-medium hover:underline">Masuk di sini</a>
+</p>
+{% endblock %}

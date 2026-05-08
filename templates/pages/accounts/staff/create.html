@@ -1,0 +1,72 @@
+{% extends 'layouts/main.html' %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="mx-auto">
+    <div class="flex items-center gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800 mb-3">{{ page_title }}</h1>
+            {% include 'components/ui/breadcrumbs.html' %}  
+        </div>
+    </div>
+
+    <form method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {% csrf_token %}
+        
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-sm font-bold text-slate-800 mb-5 flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-sky-500 rounded-full"></span>
+                    Akses Sistem
+                </h3>
+                <div class="space-y-1">
+                    {% include 'components/ui/input.html' with label="Username" name="username" placeholder="misal: staff.admin01" required=True value=form.username.value|default:'' %}
+                    
+                    {% include 'components/ui/input.html' with label="Email Kerja" type="email" name="email" placeholder="staff@klinik.com" required=True value=form.email.value|default:'' %}
+                    
+                    {% include 'components/ui/input.html' with label="Password Sementara" type="password" name="password" required=True help_text="Minimal 8 karakter untuk keamanan." value=form.password.value|default:'' %}
+                </div>
+            </div>
+
+            {% include 'components/ui/alert.html' with variant="info" title="Manajemen Shift" message="Pastikan penentuan shift kerja sesuai dengan jadwal operasional klinik untuk menghindari bentrok jadwal antar staff." %}
+        </div>
+
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-sm font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-sky-500 rounded-full"></span>
+                    Profil & Detail Pekerjaan
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                    <div class="md:col-span-2">
+                        {% include 'components/ui/input.html' with label="Nama Lengkap Staff" name="full_name" placeholder="Nama tanpa gelar akademik (opsional)" required=True value=form.full_name.value|default:'' %}
+                    </div>
+                    
+                    <div>
+                        {% include 'components/ui/input.html' with label="Jabatan" name="jabatan" placeholder="misal: Administrasi / Resepsionis" required=True value=form.jabatan.value|default:'' %}
+                    </div>
+                    
+                    <div>
+                        {% include 'components/ui/input.html' with label="Shift Kerja" name="shift_kerja" placeholder="misal: Pagi (08:00 - 14:00)" required=True value=form.shift_kerja.value|default:'' %}
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        {% include 'components/ui/input.html' with label="Nomor Telepon / WhatsApp" name="no_hp" placeholder="0812..." required=True value=form.no_hp.value|default:'' %}
+                    </div>
+
+                    <div class="md:col-span-2 mb-4">
+                        {% include 'components/ui/textarea.html' with label="Alamat Lengkap" name="alamat" placeholder="Contoh: Jl. Sudirman No. 123..." required=True rows=4 class="md:col-span-2" value=form.alamat.value|default:''  %}
+                    </div>
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-slate-100 flex justify-end gap-3">
+                    {% include 'components/ui/button.html' with type="reset" variant="ghost" label="Reset" %}
+                    
+                    {% include 'components/ui/button.html' with type="submit" variant="primary" label="Daftarkan Staff" %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

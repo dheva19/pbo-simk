@@ -1,0 +1,79 @@
+{% extends 'layouts/main.html' %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="mx-auto">
+    <div class="flex items-center gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800 mb-3">{{ page_title }}</h1>
+            {% include 'components/ui/breadcrumbs.html' %}  
+        </div>
+    </div>
+
+    <form method="POST" action="{% url 'dokter_edit' dokter.id %}" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {% csrf_token %}
+        
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-sm font-bold text-slate-800 mb-5 flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-sky-500 rounded-full"></span>
+                    Informasi Akun
+                </h3>
+                <div class="space-y-1">
+                    {% include 'components/ui/input.html' with label="Username" name="username" value=form.initial.username required=True %}
+                    
+                    {% include 'components/ui/input.html' with label="Email" type="email" name="email" value=form.initial.email required=True %}
+                    
+                    <div class="pt-2">
+                        <p class="text-[11px] text-slate-400 italic">* Kosongkan password jika tidak ingin mengubahnya.</p>
+                        {% include 'components/ui/input.html' with label="Password Baru (Opsional)" type="password" name="password" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-sm font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-sky-500 rounded-full"></span>
+                    Identitas & Profil Profesional
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                    <div class="md:col-span-2">
+                        {% include 'components/ui/input.html' with label="Nama Lengkap Dokter (beserta gelar)" name="full_name" placeholder="Contoh: dr. Budi Santoso, Sp.A" required=True value=form.initial.full_name %}
+                    </div>
+                    
+                    <div>
+                        {% include 'components/ui/input.html' with label="Nomor SIP" name="nomor_sip" placeholder="Contoh: 503/123/SIP/2024" required=True value=form.initial.nomor_sip %}
+                    </div>
+                    
+                    <div>
+                        {% include 'components/ui/input.html' with label="Spesialisasi" name="spesialisasi" placeholder="misal: Umum / Anak / Gigi" required=True value=form.initial.spesialisasi %}
+                    </div>
+                    
+                    <div>
+                        {% include 'components/ui/input.html' with label="Tarif Jasa Medis (Rp)" type="number" name="tarif_jasa" placeholder="Contoh: 150000" required=True value=form.initial.tarif_jasa %}
+                    </div>
+
+                    <div>
+                        {% include 'components/ui/input.html' with label="Nomor HP / WhatsApp" name="no_hp" placeholder="0812..." required=True value=form.initial.no_hp %}
+                    </div>
+
+                    <div class="md:col-span-2 mb-4">
+                        {% include 'components/ui/textarea.html' with label="Alamat Lengkap" name="alamat" placeholder="Contoh: Jl. Sudirman No. 123..." required=True rows=4 class="md:col-span-2" value=form.initial.alamat %}
+                    </div>
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-slate-100 flex justify-end gap-3">
+                    <a href="{% url 'dokter_index' %}" class="inline-flex items-center justify-center px-6 py-2.5 font-medium text-sm text-slate-400 hover:text-slate-600 transition-all">
+                        Batal
+                    </a>
+
+                    {% include 'components/ui/button.html' with type="submit" variant="primary" label="Simpan Perubahan" %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

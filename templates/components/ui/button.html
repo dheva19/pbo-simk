@@ -1,0 +1,18 @@
+<button type="{{ type|default:'button' }}" 
+    class="inline-flex items-center justify-center px-6 py-2.5 font-medium text-sm rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 
+    {% if variant == 'primary' or not variant %}
+        bg-sky-500 text-white hover:bg-sky-600 focus:ring-sky-300
+    {% elif variant == 'secondary' %}
+        bg-slate-100 text-slate-600 hover:bg-slate-200 focus:ring-slate-200
+    {% elif variant == 'outline' %}
+        border-2 border-sky-500 text-sky-500 hover:bg-sky-50 focus:ring-sky-200
+    {% elif variant == 'danger' %}
+        bg-red-500 text-white hover:bg-red-600 focus:ring-red-300
+    {% elif variant == 'ghost' %}
+        text-sky-600 hover:bg-sky-50 focus:ring-sky-100
+    {% endif %} 
+    {{ class }}"
+    onClick="{{ onClick }}"
+    >
+    {{ label }}
+</button>

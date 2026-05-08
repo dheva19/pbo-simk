@@ -1,0 +1,117 @@
+{% extends 'layouts/main.html' %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800 mb-3">{{ page_title }}</h1>
+        {% include 'components/ui/breadcrumbs.html' %}  
+    </div>
+    
+    <a href="{% url 'staff_create' %}">
+        {% include 'components/ui/button.html' with variant='primary' label='+ Tambah Staff' %}
+    </a>
+</div>
+
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table id="staffTable" class="w-full text-sm text-left min-w-[800px]">
+            <thead>
+                <tr class="text-slate-400 border-b border-slate-100 bg-slate-50/50">
+                    <th class="px-6 py-4 font-semibold uppercase tracking-wider">Nama Staff & Username</th>
+                    <th class="px-6 py-4 font-semibold uppercase tracking-wider">Jabatan</th>
+                    <th class="px-6 py-4 font-semibold uppercase tracking-wider">Shift Kerja</th>
+                    <th class="px-6 py-4 font-semibold uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-4 font-semibold uppercase tracking-wider text-center">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                {% for user in users %}
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <p class="font-semibold text-slate-700">{{ user.full_name }}</p>
+                                <p class="text-[10px] font-mono text-slate-400">@{{ user.username }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold border border-indigo-100">
+                            {{ user.staff_profile.jabatan }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2 text-slate-600">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-xs">{{ user.staff_profile.shift_kerja }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-slate-500">
+                        {{ user.email }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex justify-center items-center gap-2">
+                            <a href="{% url 'staff_edit' user.staff_profile.id %}" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            </a>
+                            <button onClick="confirmDeleteStaff('{{ user.staff_profile.id }}', '{{ user.full_name|escapejs }}')" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="py-12 text-center text-slate-400 italic">Belum ada data staff terdaftar.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% block extra_js %}  
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (document.getElementById("staffTable")) {
+                new simpleDatatables.DataTable("#staffTable", {
+                    searchable: true,
+                    perPage: 10,
+                    labels: {
+                        placeholder: "Cari staff atau jabatan...",
+                        perPage: "data per halaman",
+                        noRows: "Data tidak ditemukan",
+                        info: "Menampilkan {start} sampai {end} dari {rows} data",
+                    },
+                });
+            }
+        });
+        
+        function confirmDeleteStaff(id, name) {
+            Swal.fire({
+                title: 'Hapus Data Staff?',
+                text: `Akun staff ${name} akan dihapus secara permanen.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0284c7', 
+                cancelButtonColor: '#ef4444', 
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    popup: 'rounded-3xl',
+                    confirmButton: 'rounded-xl px-6 py-2.5',
+                    cancelButton: 'rounded-xl px-6 py-2.5'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/staff/${id}/delete`;
+                }
+            })
+        }
+    </script>
+{% endblock %}
+{% endblock %}

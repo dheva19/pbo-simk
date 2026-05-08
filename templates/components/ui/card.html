@@ -1,0 +1,23 @@
+{% with card_body %}
+    <div class="space-y-3">
+        <div class="flex justify-between border-b pb-2">
+            <span class="text-gray-500">ID Pengguna</span>
+            <span class="font-mono font-medium">#250512</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-500">Status</span>
+            <span class="text-green-500 font-medium">Aktif</span>
+        </div>
+    </div>
+{% endwith %}
+
+{% with card_footer %}
+    {% include "components/button.html" with label="Edit" variant="outline" class="py-1.5" %}
+    {% include "components/button.html" with label="Detail" variant="primary" class="py-1.5" %}
+{% endwith %}
+
+{% include "components/card.html" with 
+    title="Detail Akun" 
+    body=card_body 
+    footer=card_footer 
+%}

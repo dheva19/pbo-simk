@@ -1,0 +1,207 @@
+/* ============================================================
+   CUSTOM SIMPLE-DATATABLES STYLE (TAILWIND LOOK-ALIKE)
+   ============================================================ */
+
+.datatable-container {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+.datatable-wrapper {
+    background-color: #ffffff;
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+    border: 1px solid #e2e8f0; /* border-slate-200 */
+    overflow: hidden;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+.datatable-top,
+.datatable-bottom {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Hapus float dari kode asal agar flexbox bekerja */
+.datatable-top > nav, .datatable-top > div,
+.datatable-bottom > nav, .datatable-bottom > div {
+    float: none !important;
+}
+
+/* INPUT & SELECT */
+.datatable-selector {
+    padding: 0.5rem;
+    background-color: #f8fafc; /* bg-slate-50 */
+    border: 1px solid #cbd5e1; /* border-slate-300 */
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.datatable-selector:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.datatable-input {
+    padding: 0.5rem 0.75rem;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    width: 100%;
+    max-width: 260px;
+    outline: none;
+}
+
+.datatable-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* INFO TEXT */
+.datatable-info {
+    font-size: 0.875rem;
+    color: #64748b; /* text-slate-500 */
+    margin: 0;
+}
+
+/* TABLE STYLING */
+.datatable-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.datatable-table > thead > tr > th {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+}
+
+.datatable-table > tbody > tr > td {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    color: #334155; /* text-slate-700 */
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.datatable-table > tbody > tr:hover {
+    background-color: #f8fafc;
+}
+
+/* PAGINATION (PAGER) */
+.datatable-pagination ul {
+    display: flex;
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.datatable-pagination li {
+    float: none !important;
+}
+
+.datatable-pagination a,
+.datatable-pagination button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    margin-left: -1px;
+    border: 1px solid #d1d5db;
+    background-color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #4b5563;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.datatable-pagination a:hover,
+.datatable-pagination button:hover {
+    background-color: #f9fafb;
+    color: #111827;
+}
+
+/* HALAMAN AKTIF */
+.datatable-pagination .datatable-active a,
+.datatable-pagination .datatable-active button {
+    background-color: #2563eb !important; /* Blue-600 */
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+    z-index: 10;
+    cursor: default;
+}
+
+/* DISABLED STATE */
+.datatable-pagination .datatable-disabled a,
+.datatable-pagination .datatable-disabled button {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f3f4f6;
+}
+
+/* SORTING ICONS CUSTOMIZATION */
+.datatable-sorter::before {
+    border-top: 4px solid #64748b; /* Slate-500 */
+    opacity: 0.3;
+}
+
+.datatable-sorter::after {
+    border-bottom: 4px solid #64748b;
+    opacity: 0.3;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+    .datatable-top, .datatable-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .datatable-input {
+        max-width: 100%;
+    }
+}
+
+/* Custom Scrollbar untuk Navigasi */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px; /* Membuat scrollbar jadi tipis */
+}
+
+/* Background jalur scrollbar disamakan dengan warna sidebar */
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #0c2d48; 
+}
+
+/* Batang scrollbar (thumb) */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1); /* Putih transparan agar halus */
+    border-radius: 10px;
+}
+
+/* Warna saat kursor menyentuh scrollbar */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Menghilangkan tombol panah (Buttons) */
+.custom-scrollbar::-webkit-scrollbar-button {
+    display: none;
+}
+
+/* Untuk Firefox (dukungan terbatas tapi fungsional) */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) #0c2d48;
+}
