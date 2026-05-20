@@ -11,13 +11,15 @@ start virtual env (windows)
 ```
 venv/Scripts/activate
 ```
-
+(If using slash "/" doen't work, use backslash "\\" instead)\
+\
+\
 start virtual env (macos/linux)
 
 ```
 source/bin/activate
 ```
-(Make sure `(venv)` indicator is appear on your terminal)\
+Make sure `(venv)` indicator is appear on your terminal\
 \
 \
 install django
