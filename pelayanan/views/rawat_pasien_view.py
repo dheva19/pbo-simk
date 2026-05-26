@@ -2,31 +2,29 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
-from pelayanan.models import (
-    Kunjungan,
-    RekamMedis,
-    TindakanRekamMedis
-)
-
+from pelayanan.models import Kunjungan, RekamMedis, TindakanRekamMedis
 from master_data.models import TindakanMedis
 
 
 @login_required
 def rawat_pasien_detail(request, kunjungan_id=None):
-
     if kunjungan_id:
-
-        kunjungan = Kunjungan.objects.filter(
+        kunjungan = Kunjungan.objects.select_related(
+            'pasien__user',
+            'jadwal__dokter__user',
+            'jadwal__poli'
+        ).filter(
             id=kunjungan_id
         ).first()
 
     else:
-
-        kunjungan = Kunjungan.objects.first()
+        kunjungan = Kunjungan.objects.select_related(
+            'pasien__user',
+            'jadwal__dokter__user',
+            'jadwal__poli'
+        ).first()
 
     if not kunjungan:
-
         context = {
             'page_title': 'Rawat Pasien',
             'kunjungan': None,
@@ -43,12 +41,10 @@ def rawat_pasien_detail(request, kunjungan_id=None):
     tindakan_list = TindakanMedis.objects.all()
 
     if request.method == 'POST':
-
         keluhan = request.POST.get('keluhan')
         diagnosa = request.POST.get('diagnosa')
         tekanan_darah = request.POST.get('tekanan_darah')
         suhu_tubuh = request.POST.get('suhu_tubuh')
-
         tindakan_ids = request.POST.getlist('tindakan_ids')
 
         rekam_medis, created = RekamMedis.objects.get_or_create(
@@ -62,12 +58,10 @@ def rawat_pasien_detail(request, kunjungan_id=None):
         )
 
         if not created:
-
             rekam_medis.keluhan = keluhan
             rekam_medis.diagnosa = diagnosa
             rekam_medis.tekanan_darah = tekanan_darah
             rekam_medis.suhu_tubuh = suhu_tubuh
-
             rekam_medis.save()
 
         TindakanRekamMedis.objects.filter(
@@ -75,7 +69,6 @@ def rawat_pasien_detail(request, kunjungan_id=None):
         ).delete()
 
         for tindakan_id in tindakan_ids:
-
             tindakan = TindakanMedis.objects.get(
                 id=tindakan_id
             )
@@ -100,6 +93,8 @@ def rawat_pasien_detail(request, kunjungan_id=None):
 
     riwayat_rekam_medis = RekamMedis.objects.filter(
         kunjungan__pasien=kunjungan.pasien
+    ).exclude(
+        kunjungan=kunjungan
     ).order_by('-id')
 
     context = {

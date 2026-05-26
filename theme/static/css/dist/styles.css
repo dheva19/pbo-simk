@@ -597,6 +597,12 @@
   .h-screen {
     height: 100vh;
   }
+  .max-h-80 {
+    max-height: calc(var(--spacing) * 80);
+  }
+  .max-h-\[350px\] {
+    max-height: 350px;
+  }
   .max-h-\[420px\] {
     max-height: 420px;
   }
@@ -1906,6 +1912,13 @@
       }
     }
   }
+  .hover\:border-sky-400 {
+    &:hover {
+      @media (hover: hover) {
+        border-color: var(--color-sky-400);
+      }
+    }
+  }
   .hover\:bg-black\/5 {
     &:hover {
       @media (hover: hover) {
@@ -1969,6 +1982,16 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-sky-50);
+      }
+    }
+  }
+  .hover\:bg-sky-50\/40 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: color-mix(in srgb, oklch(97.7% 0.013 236.62) 40%, transparent);
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, var(--color-sky-50) 40%, transparent);
+        }
       }
     }
   }
@@ -2376,6 +2399,11 @@
   .xl\:col-span-12 {
     @media (width >= 80rem) {
       grid-column: span 12 / span 12;
+    }
+  }
+  .xl\:grid-cols-3 {
+    @media (width >= 80rem) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
   .xl\:grid-cols-4 {
