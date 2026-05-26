@@ -17,7 +17,7 @@ urlpatterns = [
     ),
 
     path(
-        'resep-obat/',
+        'resep-obat/<int:kunjungan_id>/',
         resep_obat_index,
         name='resep_obat_index'
     ),

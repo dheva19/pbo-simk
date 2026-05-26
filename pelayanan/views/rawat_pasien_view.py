@@ -41,12 +41,70 @@ def rawat_pasien_detail(request, kunjungan_id=None):
     tindakan_list = TindakanMedis.objects.all()
 
     if request.method == 'POST':
-        keluhan = request.POST.get('keluhan')
-        diagnosa = request.POST.get('diagnosa')
-        tekanan_darah = request.POST.get('tekanan_darah')
-        suhu_tubuh = request.POST.get('suhu_tubuh')
+        keluhan = request.POST.get('keluhan', '').strip()
+        diagnosa = request.POST.get('diagnosa', '').strip()
+        tekanan_darah = request.POST.get('tekanan_darah', '').strip()
+        suhu_tubuh = request.POST.get('suhu_tubuh', '').strip()
+
         tindakan_ids = request.POST.getlist('tindakan_ids')
 
+        # VALIDASI
+        if not keluhan:
+            messages.error(
+                request,
+                'Keluhan pasien wajib diisi.'
+            )
+
+            return redirect(
+                'rawat_pasien_detail',
+                kunjungan_id=kunjungan.id
+            )
+
+        if not diagnosa:
+            messages.error(
+                request,
+                'Diagnosa wajib diisi.'
+            )
+
+            return redirect(
+                'rawat_pasien_detail',
+                kunjungan_id=kunjungan.id
+            )
+
+        if not tekanan_darah:
+            messages.error(
+                request,
+                'Tekanan darah wajib diisi.'
+            )
+
+            return redirect(
+                'rawat_pasien_detail',
+                kunjungan_id=kunjungan.id
+            )
+
+        if not suhu_tubuh:
+            messages.error(
+                request,
+                'Suhu tubuh wajib diisi.'
+            )
+
+            return redirect(
+                'rawat_pasien_detail',
+                kunjungan_id=kunjungan.id
+            )
+
+        if len(tindakan_ids) < 1:
+            messages.error(
+                request,
+                'Minimal pilih 1 tindakan medis.'
+            )
+
+            return redirect(
+                'rawat_pasien_detail',
+                kunjungan_id=kunjungan.id
+            )
+
+        # SIMPAN DATA
         rekam_medis, created = RekamMedis.objects.get_or_create(
             kunjungan=kunjungan,
             defaults={
@@ -69,6 +127,7 @@ def rawat_pasien_detail(request, kunjungan_id=None):
         ).delete()
 
         for tindakan_id in tindakan_ids:
+
             tindakan = TindakanMedis.objects.get(
                 id=tindakan_id
             )
@@ -78,16 +137,16 @@ def rawat_pasien_detail(request, kunjungan_id=None):
                 tindakan_medis=tindakan
             )
 
-        kunjungan.status = 'selesai'
+        kunjungan.status = 'menunggu_resep'
         kunjungan.save()
 
         messages.success(
             request,
-            'Data rekam medis berhasil disimpan.'
+            'Pemeriksaan berhasil disimpan. Silahkan buat resep obat.'
         )
 
         return redirect(
-            'rawat_pasien_detail',
+            'resep_obat_index',
             kunjungan_id=kunjungan.id
         )
 
