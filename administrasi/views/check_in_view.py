@@ -91,7 +91,8 @@ def check_in_offline(request):
             pasien_id = pasien_id,
             tanggal_kunjungan = tanggal_kunjungan,
             jadwal_id = jadwal_id,
-            nomor_antrean=nomor_baru
+            nomor_antrean=nomor_baru,
+            status = 'menunggu'
         )
 
         messages.success(request, f'Berhasil mendaftarkan pasien dengan nomor antrean {kunjungan.kode_antrean}')
