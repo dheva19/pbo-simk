@@ -1,5 +1,5 @@
 # pelayanan/views/resep_obat_view
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -16,111 +16,131 @@ from farmasi.models import (
 
 
 @login_required
-def resep_obat_index(request, kunjungan_id):
-
-    kunjungan = get_object_or_404(
-        Kunjungan.objects.select_related(
+def resep_obat_index(request, kunjungan_id=None):
+    if kunjungan_id:
+        kunjungan = Kunjungan.objects.select_related(
             'pasien__user',
             'jadwal__dokter__user',
             'jadwal__poli'
-        ),
-        id=kunjungan_id
-    )
+        ).filter(
+            id=kunjungan_id
+        ).first()
+
+    else:
+        kunjungan = Kunjungan.objects.select_related(
+            'pasien__user',
+            'jadwal__dokter__user',
+            'jadwal__poli'
+        ).filter(
+            status__in=['rawat', 'resep']
+        ).order_by('id').first()
+
+    if not kunjungan:
+        context = {
+            'page_title': 'Resep Obat',
+            'kunjungan': None,
+            'rekam_medis': None,
+            'obat_list': [],
+            'detail_resep': [],
+            'is_rekam_medis_exist': False,
+        }
+
+        return render(
+            request,
+            'pages/pelayanan/resep_obat/index.html',
+            context
+        )
 
     rekam_medis = RekamMedis.objects.filter(
         kunjungan=kunjungan
     ).first()
 
+    is_rekam_medis_exist = rekam_medis is not None
+
     obat_list = Obat.objects.select_related(
         'kategori'
-    ).all()
+    ).all().order_by('id')
 
-    resep_obat, created = Resep.objects.get_or_create(
-        rekam_medis=rekam_medis,
-        defaults={
-            'status': 'diproses'
-        }
-    )
+    resep = None
+    detail_resep = []
+
+    if rekam_medis:
+        resep, created = Resep.objects.get_or_create(
+            rekam_medis=rekam_medis,
+            defaults={
+                'status': 'diproses'
+            }
+        )
+
+        detail_resep = DetailResep.objects.filter(
+            resep=resep
+        ).select_related(
+            'obat',
+            'obat__kategori'
+        )
 
     if request.method == 'POST':
-        obat_ids = request.POST.getlist('obat_ids')
-        jumlah_list = request.POST.getlist('jumlah')
-        aturan_pakai_list = request.POST.getlist('aturan_pakai')
-        selected_obat = []
-
-        for index, obat_id in enumerate(obat_ids):
-            jumlah = jumlah_list[index].strip()
-            aturan_pakai = aturan_pakai_list[index].strip()
-
-            if aturan_pakai and jumlah:
-
-                if int(jumlah) <= 0:
-
-                    messages.error(
-                        request,
-                        'Jumlah obat tidak boleh 0.'
-                    )
-
-                    return redirect(
-                        'resep_obat_index',
-                        kunjungan_id=kunjungan.id
-                    )
-
-                selected_obat.append({
-                    'obat_id': obat_id,
-                    'jumlah': jumlah,
-                    'aturan_pakai': aturan_pakai
-                })
-
-        if len(selected_obat) < 1:
+        if not rekam_medis:
             messages.error(
                 request,
-                'Minimal pilih 1 obat dan isi aturan pakai.'
+                'Dokter harus menyelesaikan pemeriksaan terlebih dahulu.'
             )
 
             return redirect(
-                'resep_obat_index',
+                'rawat_pasien_detail',
+                kunjungan_id=kunjungan.id
+            )
+
+        obat_ids = request.POST.getlist('obat_ids')
+        selected_items = []
+
+        for obat_id in obat_ids:
+            selected_items.append({
+                'obat_id': obat_id,
+                'jumlah': 1
+            })
+
+        if len(selected_items) < 1:
+            messages.error(
+                request,
+                'Minimal pilih 1 obat.'
+            )
+
+            return redirect(
+                'resep_obat_detail',
                 kunjungan_id=kunjungan.id
             )
 
         DetailResep.objects.filter(
-            resep=resep_obat
+            resep=resep
         ).delete()
 
-        for item in selected_obat:
+        for item in selected_items:
             obat = Obat.objects.get(
                 id=item['obat_id']
             )
 
             DetailResep.objects.create(
-                resep=resep_obat,
+                resep=resep,
                 obat=obat,
                 jumlah_diminta=item['jumlah'],
-                dosis_aturan=item['aturan_pakai'],
+                dosis_aturan='-',
                 subtotal_harga=(
                     int(item['jumlah']) * obat.harga_jual
                 )
             )
 
-        kunjungan.status = 'menunggu_farmasi'
+        kunjungan.status = 'selesai'
         kunjungan.save()
 
         messages.success(
             request,
-            'Resep obat berhasil dibuat.'
+            'Resep obat berhasil disimpan.'
         )
 
         return redirect(
-            'resep_obat_index',
-            kunjungan_id=kunjungan.id
+            'resep_obat_index'
         )
-
-    detail_resep = DetailResep.objects.filter(
-        resep=resep_obat
-    ).select_related(
-        'obat',
-        'obat__kategori'
-    )
 
     context = {
         'page_title': 'Resep Obat',
@@ -128,6 +148,7 @@ def resep_obat_index(request, kunjungan_id):
         'rekam_medis': rekam_medis,
         'obat_list': obat_list,
         'detail_resep': detail_resep,
+        'is_rekam_medis_exist': is_rekam_medis_exist,
     }
 
     return render(

@@ -22,7 +22,13 @@ def rawat_pasien_detail(request, kunjungan_id=None):
             'pasien__user',
             'jadwal__dokter__user',
             'jadwal__poli'
-        ).first()
+        ).filter(
+            status__in=['diproses', 'rawat']
+        ).order_by('id').first()
+
+    if kunjungan and kunjungan.status == 'diproses':
+        kunjungan.status = 'rawat'
+        kunjungan.save()
 
     if not kunjungan:
         context = {
@@ -39,6 +45,20 @@ def rawat_pasien_detail(request, kunjungan_id=None):
         )
 
     tindakan_list = TindakanMedis.objects.all()
+
+    rekam_medis = RekamMedis.objects.filter(
+        kunjungan=kunjungan
+    ).first()
+
+    selected_tindakan_ids = []
+
+    if rekam_medis:
+        selected_tindakan_ids = TindakanRekamMedis.objects.filter(
+            rekam_medis=rekam_medis
+        ).values_list(
+            'tindakan_medis_id',
+            flat=True
+        )
 
     if request.method == 'POST':
         keluhan = request.POST.get('keluhan', '').strip()
@@ -137,16 +157,17 @@ def rawat_pasien_detail(request, kunjungan_id=None):
                 tindakan_medis=tindakan
             )
 
-        kunjungan.status = 'menunggu_resep'
-        kunjungan.save()
 
         messages.success(
             request,
-            'Pemeriksaan berhasil disimpan. Silahkan buat resep obat.'
+            'Data pemeriksaan berhasil disimpan.'
         )
 
+        kunjungan.status = 'resep'
+        kunjungan.save()
+
         return redirect(
-            'resep_obat_index',
+            'resep_obat_detail',
             kunjungan_id=kunjungan.id
         )
 
@@ -161,6 +182,8 @@ def rawat_pasien_detail(request, kunjungan_id=None):
         'kunjungan': kunjungan,
         'tindakan_list': tindakan_list,
         'riwayat_rekam_medis': riwayat_rekam_medis,
+        'rekam_medis': rekam_medis,
+        'selected_tindakan_ids': selected_tindakan_ids,
     }
 
     return render(

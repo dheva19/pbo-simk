@@ -17,9 +17,14 @@ urlpatterns = [
     ),
 
     path(
-        'resep-obat/<int:kunjungan_id>/',
+        'resep-obat/',
         resep_obat_index,
         name='resep_obat_index'
     ),
 
+    path(
+        'resep-obat/<int:kunjungan_id>/',
+        resep_obat_index,
+        name='resep_obat_detail'
+    ),
 ]

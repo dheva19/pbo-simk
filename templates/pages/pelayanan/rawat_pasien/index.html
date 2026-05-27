@@ -16,10 +16,11 @@
     <div class="xl:col-span-12">
         <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-10 text-center">
             <h3 class="text-xl font-bold text-slate-700 mb-3">
-                Belum Ada Data Kunjungan
+                Belum Ada Pasien
             </h3>
+
             <p class="text-slate-400">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Molestias, aut?
+                Tidak ada antrian pasien.
             </p>
         </div>
     </div>
@@ -33,9 +34,6 @@
                     <h3 class="text-lg font-bold text-slate-800">
                         Detail Pasien
                     </h3>
-                    <p class="text-sm text-slate-400 mt-1">
-                        Informasi data pasien yang sedang diperiksa
-                    </p>
                 </div>
 
                 <span class="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-bold">
@@ -97,7 +95,7 @@
                         Keluhan Pasien
                     </label>
                     <textarea name="keluhan" rows="4" required class="w-full rounded-2xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500"
-                        placeholder="Masukkan keluhan pasien..."></textarea>
+                        placeholder="Masukkan keluhan pasien...">{{ rekam_medis.keluhan|default:'' }}</textarea>
                 </div>
 
                 <div>
@@ -105,7 +103,7 @@
                         Diagnosa
                     </label>
                     <textarea name="diagnosa" rows="4" required class="w-full rounded-2xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500"
-                        placeholder="Masukkan hasil diagnosa dokter..."></textarea>
+                        placeholder="Masukkan hasil diagnosa dokter...">{{ rekam_medis.diagnosa|default:'' }}</textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -113,9 +111,7 @@
                         <label class="text-sm font-semibold text-slate-600 block mb-2">
                             Tekanan Darah
                         </label>
-                        <input
-                            type="text"
-                            name="tekanan_darah" required
+                        <input type="text" name="tekanan_darah" required value="{{ rekam_medis.tekanan_darah|default:'' }}"
                             placeholder="120/80"
                             class="w-full rounded-2xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500"
                         >
@@ -125,10 +121,7 @@
                         <label class="text-sm font-semibold text-slate-600 block mb-2">
                             Suhu Tubuh
                         </label>
-                        <input
-                            type="number"
-                            step="0.1"
-                            name="suhu_tubuh" required
+                        <input type="number" step="0.1" name="suhu_tubuh" required value="{{ rekam_medis.suhu_tubuh|default:'' }}"
                             placeholder="36.5"
                             class="w-full rounded-2xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500"
                         >
@@ -144,7 +137,7 @@
                                 Tindakan Medis
                             </label>
                             <span class="text-xs text-slate-400">
-                                Pilih tindakan yang dilakukan dokter
+                                Pilih tindakan yang dilakukan
                             </span>
                         </div>
 
@@ -154,11 +147,8 @@
                                 {% for tindakan in tindakan_list %}
 
                                 <label class="flex items-start gap-3 rounded-xl border border-slate-200 p-3 cursor-pointer hover:border-sky-400 hover:bg-sky-50/40 transition-all">
-                                    <input
-                                        type="checkbox"
-                                        name="tindakan_ids"
-                                        value="{{ tindakan.id }}"
-                                        class="mt-1 w-4 h-4 text-sky-600 rounded"
+                                    <input type="checkbox" name="tindakan_ids" value="{{ tindakan.id }}" class="mt-1 w-4 h-4 text-sky-600 rounded"
+                                        {% if tindakan.id in selected_tindakan_ids %} checked {% endif %}
                                     >
                                     <div class="overflow-hidden">
                                         <p class="text-sm font-semibold text-slate-700 leading-tight">
@@ -250,14 +240,14 @@
                     </h4>
                 </div>
 
-                <div class="bg-slate-50 rounded-2xl p-4">
+                {% comment %} <div class="bg-slate-50 rounded-2xl p-4">
                     <p class="text-xs text-slate-400 uppercase">
                         Status
                     </p>
                     <h4 class="text-sm font-bold text-emerald-600 mt-2">
                         {{ kunjungan.status }}
                     </h4>
-                </div>
+                </div> {% endcomment %}
 
             </div>
         </div>
