@@ -7,13 +7,21 @@ from master_data.models import TindakanMedis
 
 @login_required
 def rawat_pasien_detail(request, kunjungan_id=None):
-    # if not hasattr(request.user, 'dokter'):
-    #     messages.error(
-    #         request,
-    #         'Akun ini bukan akun dokter.'
-    #     )
-    #     return redirect('dashboard')
-    # dokter = request.user.dokter
+    if request.user.role != 'dokter':
+        messages.error(
+            request,
+            'Akun ini bukan akun dokter.'
+        )
+        return redirect('dashboard')
+
+    dokter = getattr(request.user, 'dokter_profile', None)
+
+    if not dokter:
+        messages.error(
+            request,
+            'Profile dokter tidak ditemukan.'
+        )
+        return redirect('dashboard')
 
     if kunjungan_id:
         kunjungan = Kunjungan.objects.select_related(
@@ -22,7 +30,7 @@ def rawat_pasien_detail(request, kunjungan_id=None):
             'jadwal__poli'
         ).filter(
             id=kunjungan_id,
-            # jadwal__dokter = dokter
+            jadwal__dokter = dokter
         ).first()
 
     else:
@@ -31,24 +39,13 @@ def rawat_pasien_detail(request, kunjungan_id=None):
             'jadwal__dokter__user',
             'jadwal__poli'
         ).filter(
-            # jadwal__dokter = dokter,
+            jadwal__dokter = dokter,
             status__in=['diproses', 'rawat']
         ).order_by('id').first()
 
     if kunjungan and kunjungan.status == 'diproses':
         kunjungan.status = 'rawat'
-        # kunjungan.dokter_penanggung_jawab = dokter
         kunjungan.save()
-
-    # if (kunjungan and kunjungan.dokter_penanggung_jawab and kunjungan.dokter_penanggung_jawab != dokter):
-    #     messages.error(
-    #         request,
-    #         'Pasien sedang ditangani dokter lain.'
-    #     )
-
-    #     return redirect(
-    #         'rawat_pasien_index'
-    #     )
 
 
     if not kunjungan:
