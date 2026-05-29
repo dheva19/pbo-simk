@@ -690,6 +690,15 @@
   .min-w-\[150px\] {
     min-width: 150px;
   }
+  .min-w-\[200px\] {
+    min-width: 200px;
+  }
+  .min-w-\[250px\] {
+    min-width: 250px;
+  }
+  .min-w-\[300px\] {
+    min-width: 300px;
+  }
   .min-w-\[800px\] {
     min-width: 800px;
   }
