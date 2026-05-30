@@ -205,3 +205,4 @@ def rawat_pasien_detail(request, kunjungan_id=None):
         'pages/pelayanan/rawat_pasien/index.html',
         context
     )
+

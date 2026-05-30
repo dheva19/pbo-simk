@@ -26,5 +26,4 @@ urlpatterns = [
         resep_obat_index,
         name='resep_obat_detail'
     ),
-    
 ]
