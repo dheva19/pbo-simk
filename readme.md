@@ -9,7 +9,7 @@ make virtual env
 start virtual env (windows)
 
 ```
-    venv/Scripts/activate
+    source venv/Scripts/activate
 ```
 
 start virtual env (macos/linux)
@@ -35,3 +35,5 @@ start tailwindcss
 ```
   py manage.py tailwind start
 ```
+username: admin
+pass: passwordrahasia123

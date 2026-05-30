@@ -4,6 +4,7 @@ class KategoriObat(models.Model):
     nama_kategori = models.CharField(max_length=100)
 
 class Obat(models.Model):
+    nama_obat = models.CharField(max_length=255)
     kode_obat = models.CharField(max_length=10, unique=True)
     kategori = models.ForeignKey(KategoriObat, on_delete=models.CASCADE)
     satuan = models.CharField(max_length=20)

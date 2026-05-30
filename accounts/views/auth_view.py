@@ -102,16 +102,16 @@ def dashboard_view(request):
 
 
 def generate_superadmin(request):
-    checkSuperadmin = User.objects.get(role="admin")
+    checkSuperadmin = User.objects.filter(role="admin")
 
     if checkSuperadmin:
         messages.error(request, "Akun superadmin sudah ada")
     else:
         User.objects.create_superuser(
             full_name = "Administrator SIMK",
-            username = "superadmin",
+            username = "admin",
             email = "admin@gmail.com",
-            password = "rahasia123",
+            password = "passwordrahasia123",
             role = "admin"
         )
         messages.success(request, "Akun superadmin berhasil dibuat")
