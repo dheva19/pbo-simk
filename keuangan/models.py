@@ -13,3 +13,5 @@ class Tagihan(models.Model):
 
     class Meta:
         db_table = 'tagihan'
+
+        

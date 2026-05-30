@@ -40,3 +40,4 @@ def buat_tagihan_index(request, id):
         'page_title': 'Buat Tagihan'
     }
     return render(request, 'pages/keuangan/tagihan_pasien/details.html', context)
+
