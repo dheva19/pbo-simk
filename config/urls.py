@@ -5,6 +5,7 @@ from master_data import views as master_data_views
 from farmasi import views as farmasi_views
 from dashboard import views as dashboard_views
 from administrasi import views as administrasi_views
+from pelayanan import views as pelayanan_views
 
 urlpatterns = [
     # Account Route
@@ -90,5 +91,28 @@ urlpatterns = [
     
     path('api/antrean/set_loket/', administrasi_views.api_set_loket, name='api_set_loket'),
     
-    path('pelayanan/', include('pelayanan.urls')),         
+    # Pelayanan
+    path(
+        'rawat-pasien/',
+        pelayanan_views.rawat_pasien_detail,
+        name='rawat_pasien_index'
+    ),
+
+    path(
+        'rawat-pasien/<int:kunjungan_id>/',
+        pelayanan_views.rawat_pasien_detail,
+        name='rawat_pasien_detail'
+    ),
+
+    path(
+        'resep-obat/',
+        pelayanan_views.resep_obat_index,
+        name='resep_obat_index'
+    ),
+
+    path(
+        'resep-obat/<int:kunjungan_id>/',
+        pelayanan_views.resep_obat_index,
+        name='resep_obat_detail'
+    ),         
 ]
