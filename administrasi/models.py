@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.crypto import get_random_string
 
-class Tiket(models.Model):
+from accounts.models import TimestampModel
+
+class Tiket(TimestampModel):
     no_tiket = models.CharField(max_length=20, unique=True)
     pasien = models.ForeignKey('accounts.Pasien', on_delete=models.CASCADE)
     kunjungan = models.ForeignKey('pelayanan.Kunjungan', on_delete=models.CASCADE)
@@ -11,13 +13,13 @@ class Tiket(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.no_tiket:
-            self.no_tiket = self.generate_no_tiket()
+            self.no_tiket = self._generate_no_tiket()
         
         super().save(*args, **kwargs)
 
     @classmethod
-    def generate_no_tiket(cls):
-        prefix = "TK-" 
+    def _generate_no_tiket(cls):
+        prefix = "TK-"
         panjang_acak = 8 
         
         while True:
@@ -39,3 +41,9 @@ class Loket(models.Model):
 
     class Meta:
         db_table = 'loket'
+
+    @classmethod
+    def tutup_loket(self):
+        self.staff = None
+        self.kunjungan = None
+        self.save()

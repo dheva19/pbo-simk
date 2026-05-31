@@ -1,14 +1,16 @@
 from django.db import models
 from pelayanan.models import Kunjungan
 
-class Poli(models.Model):
+from accounts.models import TimestampModel
+
+class Poli(TimestampModel):
     kode_poli = models.CharField(max_length=10, unique=True)
     nama_poli = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'poli'
 
-class JadwalPraktik(models.Model):
+class JadwalPraktik(TimestampModel):
     dokter = models.ForeignKey('accounts.Dokter', on_delete=models.CASCADE)
     poli = models.ForeignKey(Poli, on_delete=models.CASCADE)
     hari = models.CharField(max_length=20)
@@ -25,7 +27,7 @@ class JadwalPraktik(models.Model):
         ).values_list('jadwal_id', flat=True).distinct()
         return list(jadwal_sibuk)
     
-class TindakanMedis(models.Model):
+class TindakanMedis(TimestampModel):
     kode_tindakan = models.CharField(max_length=10, unique=True, blank=True)
     nama_tindakan = models.CharField(max_length=100)
     tarif = models.DecimalField(max_digits=12, decimal_places=2)
@@ -59,7 +61,7 @@ class TindakanMedis(models.Model):
     def __str__(self):
         return f"{self.kode_tindakan} - {self.nama_tindakan}"
     
-class MetodePembayaran(models.Model):
+class MetodePembayaran(TimestampModel):
     nama_metode = models.CharField(max_length=50)
 
     class Meta:

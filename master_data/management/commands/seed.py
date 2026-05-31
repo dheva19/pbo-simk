@@ -192,16 +192,6 @@ class Command(BaseCommand):
             no_hp='083456789013'
         )
         
-        # Pasien 3 (Tanpa User)
-        Pasien.objects.create(
-            user=None,
-            nik='3213140595750003',
-            tanggal_lahir=datetime(1975, 7, 22).date(),
-            jenis_kelamin='L',
-            alamat='Jl. Sultan Agung No. 30',
-            no_hp='083456789014'
-        )
-        
         self.stdout.write(self.style.SUCCESS('✓ User berhasil dibuat'))
 
     def seed_poli(self):

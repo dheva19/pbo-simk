@@ -48,7 +48,7 @@ def jadwal_praktik_create(request):
 
     context = {
         'form': form,
-        'dokter_options': [(d.id, d.user.full_name) for d in dokters],
+        'dokter_options': [(d.id, d.get_identitas) for d in dokters],
         'poli_options': [(p.id, p.nama_poli) for p in polis],
         'hari_options': [(hari, hari) for hari in ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat']],
         'breadcrumbs': [
@@ -87,7 +87,7 @@ def jadwal_praktik_edit(request, id):
 
     context = {
         'jadwal': jadwal,
-        'dokter_options': [(d.id, d.user.full_name) for d in dokters],
+        'dokter_options': [(d.id, d.get_identitas) for d in dokters],
         'poli_options': [(p.id, p.nama_poli) for p in polis],
         'hari_options': [(hari, hari) for hari in ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat']],
         'breadcrumbs': [

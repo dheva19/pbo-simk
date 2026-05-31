@@ -26,7 +26,7 @@
             {% for resep in daftar_resep %}
             <tr class="hover:bg-slate-50/50 transition-colors">
                 <td class="py-4">
-                    <p class="font-semibold text-slate-700">#{{ resep.id }}</p>
+                    <p class="font-semibold text-slate-700">RS{{ resep.id }}</p>
                 </td>
                 <td class="py-4">
                     <p class="font-semibold text-slate-700">{{ resep.rekam_medis.kunjungan.pasien.user.full_name }}</p>

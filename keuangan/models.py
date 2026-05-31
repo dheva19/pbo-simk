@@ -1,6 +1,8 @@
 from django.db import models
 
-class Tagihan(models.Model):
+from accounts.models import TimestampModel
+
+class Tagihan(TimestampModel):
     nomor_invoice = models.CharField(max_length=50, unique=True)
     kunjungan = models.OneToOneField('pelayanan.Kunjungan', on_delete=models.CASCADE)
     kasir = models.ForeignKey('accounts.Staff', on_delete=models.SET_NULL, null=True)

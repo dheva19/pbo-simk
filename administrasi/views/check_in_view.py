@@ -15,8 +15,12 @@ def get_jadwal():
         hari_key = j.hari.lower() 
         if hari_key not in jadwal_dict:
             jadwal_dict[hari_key] = []
+
+        nama_poli = j.poli.nama_poli
+        if "poli" not in nama_poli.lower():
+            nama_poli = "Poli " + nama_poli
             
-        label = f"{j.dokter.user.full_name} - Poli {j.poli.nama_poli} ({j.jam_mulai.strftime('%H:%M')} - {j.jam_selesai.strftime('%H:%M')})"
+        label = f" {nama_poli} ({j.jam_mulai.strftime('%H:%M')} - {j.jam_selesai.strftime('%H:%M')}) | {j.dokter.get_identitas()}"
         
         jadwal_dict[hari_key].append({
             'value': j.id,
@@ -110,10 +114,7 @@ def check_in_offline(request):
     
     pasien_options = []
     for pasien in semua_pasien:
-        nama_lengkap = pasien.user.full_name if pasien.user else "Tanpa Nama"
-        
-        label = f"{pasien.nomor_rekam_medis} - {nama_lengkap}"
-        
+        label = pasien.get_identitas()
         pasien_options.append((pasien.id, label))
 
     context = {

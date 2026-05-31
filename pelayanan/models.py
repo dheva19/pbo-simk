@@ -1,7 +1,7 @@
 from django.db import models
-from administrasi.models import Tiket 
+from accounts.models import TimestampModel
 
-class Kunjungan(models.Model):
+class Kunjungan(TimestampModel):
     pasien = models.ForeignKey('accounts.Pasien', on_delete=models.CASCADE)
     jadwal = models.ForeignKey('master_data.JadwalPraktik', on_delete=models.CASCADE)
     tanggal_kunjungan = models.DateField()
@@ -32,7 +32,7 @@ class Kunjungan(models.Model):
         return "N/A"
         
 
-class RekamMedis(models.Model):
+class RekamMedis(TimestampModel):
     kunjungan = models.OneToOneField(Kunjungan, on_delete=models.CASCADE)
     keluhan = models.TextField()
     diagnosa = models.TextField()
@@ -42,7 +42,7 @@ class RekamMedis(models.Model):
     class Meta:
         db_table = 'rekam_medis'
 
-class TindakanRekamMedis(models.Model):
+class TindakanRekamMedis(TimestampModel):
     rekam_medis = models.ForeignKey(RekamMedis, on_delete=models.CASCADE)
     tindakan_medis = models.ForeignKey('master_data.TindakanMedis', on_delete=models.CASCADE)
 

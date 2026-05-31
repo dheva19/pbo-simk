@@ -3,6 +3,23 @@ from django.db import models
 from django.conf import settings
 from datetime import datetime
 
+class TimestampModel(models.Model):
+    dibuat_pada = models.DateTimeField(auto_now_add=True)
+    diperbarui_pada = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class BaseUserProfile(TimestampModel):
+    no_hp = models.CharField(max_length=15)
+    alamat = models.TextField()
+
+    class Meta:
+        abstract = True
+
+    def get_identitas(self):
+        raise NotImplementedError("Subclass wajib mengimplementasikan method ini!")
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, full_name, username, email, password=None, **extra_fields):
         email = self.normalize_email(email)
@@ -19,7 +36,7 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
-        ('admin', 'Administrator'),
+        ('admin', 'Admin'),
         ('staff', 'Staff'),
         ('dokter', 'Dokter'),
         ('pasien', 'Pasien'),
@@ -39,47 +56,50 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = 'user'
 
-class Dokter(models.Model):
+class Dokter(BaseUserProfile):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='dokter_profile')
     spesialisasi = models.CharField(max_length=100)
     nomor_sip = models.CharField(max_length=50)
     tarif_jasa = models.DecimalField(max_digits=12, decimal_places=2)
-    no_hp = models.CharField(max_length=5)
-    alamat = models.TextField()
 
     class Meta:
         db_table = 'dokter'
 
-class Staff(models.Model):
+    def get_identitas(self):
+        return f"{self.user.full_name} (Dokter {self.spesialisasi})"
+
+class Staff(BaseUserProfile):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='staff_profile')
     jabatan = models.CharField(max_length=50)
     shift_kerja = models.CharField(max_length=50)
-    no_hp = models.CharField(max_length=5)
-    alamat = models.TextField()
 
     class Meta:
         db_table = 'staff'
 
-class Pasien(models.Model):
+    def get_identitas(self):
+        return f"{self.user.full_name} ({self.jabatan})"
+
+class Pasien(BaseUserProfile):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='pasien_profile')
     nomor_rekam_medis = models.CharField(max_length=20, unique=True)
     nik = models.CharField(max_length=20, unique=True)
     tanggal_lahir = models.DateField()
     jenis_kelamin = models.CharField(max_length=10, choices=[('L', 'Laki-laki'), ('P', 'Perempuan')])
-    alamat = models.TextField()
-    no_hp = models.CharField(max_length=15)
 
     class Meta:
         db_table = 'pasien'
 
+    def get_identitas(self):
+        return f"{self.nomor_rekam_medis} - {self.user.full_name}"
+
     def save(self, *args, **kwargs):
         if not self.nomor_rekam_medis:
-            self.nomor_rekam_medis = self.generate_nomor_rm()
+            self.nomor_rekam_medis = self._generate_nomor_rm()
         
         super().save(*args, **kwargs)
 
     @classmethod
-    def generate_nomor_rm(cls):
+    def _generate_nomor_rm(cls):
         today_str = datetime.now().strftime('%Y%m%d')
         prefix = f"RM-{today_str}-"
         
