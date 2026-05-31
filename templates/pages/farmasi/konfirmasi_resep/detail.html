@@ -38,7 +38,7 @@
             
             <div class="flex items-start justify-between pb-4 border-b border-slate-100">
                 <span class="text-slate-600 font-medium">Apoteker</span>
-                <span class="text-slate-800 font-semibold">{{ resep.apoteker.nama_staff|default:"Belum ditentukan" }}</span>
+                <span class="text-slate-800 font-semibold">{{ resep.apoteker.user.full_name|default:"Belum ditentukan" }}</span>
             </div>
         </div>
     </div>
@@ -50,17 +50,17 @@
         <div class="space-y-4">
             <div class="pb-4 border-b border-slate-100">
                 <span class="text-slate-600 font-medium text-sm block mb-2">Nama Pasien</span>
-                <span class="text-slate-800 font-semibold block">{{ resep.rekam_medis.pasien.nama_pasien }}</span>
+                <span class="text-slate-800 font-semibold block">{{ resep.rekam_medis.kunjungan.pasien.user.full_name }}</span>
             </div>
             
             <div class="pb-4 border-b border-slate-100">
                 <span class="text-slate-600 font-medium text-sm block mb-2">No. RM</span>
-                <span class="text-slate-800 font-semibold block">#{{ resep.rekam_medis.id }}</span>
+                <span class="text-slate-800 font-semibold block">{{ resep.rekam_medis.kunjungan.pasien.nomor_rekam_medis }}</span>
             </div>
             
             <div>
                 <span class="text-slate-600 font-medium text-sm block mb-2">No. Identitas</span>
-                <span class="text-slate-800 font-semibold block">{{ resep.rekam_medis.pasien.no_identitas }}</span>
+                <span class="text-slate-800 font-semibold block">{{ resep.rekam_medis.kunjungan.pasien.nik }}</span>
             </div>
         </div>
     </div>

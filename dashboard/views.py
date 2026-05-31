@@ -40,9 +40,9 @@ def dashboard_view(request):
     elif user.role in ['staff', 'admin']:
         role_detail = getattr(user, 'staff_profile', None) 
         quick_links = [
-            {'title': 'Registrasi Pasien', 'desc': 'Check in pasien', 'url': reverse('check_in_index'), 'color': 'text-rose-600 bg-rose-100'},
+            {'title': 'Modul Administrasi', 'desc': 'Pendaftaran pasien', 'url': reverse('check_in_index'), 'color': 'text-rose-600 bg-rose-100'},
             {'title': 'Modul Kasir', 'desc': 'Kelola pembayaran', 'url': '#', 'color': 'text-green-600 bg-green-100'},
-            {'title': 'Modul Apotek', 'desc': 'Kelola stok obat', 'url': reverse('stok_obat_index'), 'color': 'text-cyan-600 bg-cyan-100'},
+            {'title': 'Modul Apoteker', 'desc': 'Kelola stok obat', 'url': reverse('stok_obat_index'), 'color': 'text-cyan-600 bg-cyan-100'},
         ]
 
     context = {

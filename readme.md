@@ -1,53 +1,24 @@
 ## SISTEM INFORMASI MANAJEMENT KLINIK
 
-make virtual env
-
-```
-    python -m venv venv
-```
-
-start virtual env (windows)
-
-```
-    source venv/Scripts/activate
+setup awal project
+```bash
+./setup.bat
 ```
 
-start virtual env (macos/linux)
-
-```
-    source/bin/activate
-```
-
-install django
-
-```
-    pip install django
+menjalankan server django dan tailwind
+```bash
+./run.bat
 ```
 
-install tailwindcss
-
-```
-    pip install django-tailwind
-```
-```
-    python manage.py tailwind init
-```
-```
-    python manage.py tailwind install
+migrate fresh database (venv aktif)
+```bash
+py fresh_migrtae.py
 ```
 
-start server
-
+menjalankan seeder untuk data tester (venv aktif)
+```bash
+py manage.py seed --clear
 ```
-  py manage.py runserver
-```
 
-start tailwindcss
+info: credential login untuk testing dapat diakses di login_credential.txt
 
-```
-  py manage.py tailwind start
-```
-username: admin
-pass: passwordrahasia123
-
-python manage.py seed --clear

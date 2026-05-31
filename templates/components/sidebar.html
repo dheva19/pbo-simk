@@ -50,6 +50,7 @@
         </a>
 
         {% comment %} Administrasi {% endcomment %}
+    {% if request.user.role == 'admin' or request.user.role == 'staff' and request.user.staff_profile.jabatan == 'Administrasi' %}
         <p class="px-4 py-2 text-[10px] font-bold text-white/30 uppercase tracking-widest">Administrasi</p>
 
         <a href="{% url 'loket_index' %}" 
@@ -91,8 +92,10 @@
             </svg>
             <span class="text-sm font-medium">Monitor</span>
         </a>
+    {% endif %}
 
         {% comment %} Pelayanan {% endcomment %}
+    {% if request.user.role in 'admin,dokter' %}
         <p class="px-4 py-2 text-[10px] font-bold text-white/30 uppercase tracking-widest">Pelayanan</p>
 
         <a href="{% url 'tindakan_medis_index' %}" 
@@ -128,8 +131,10 @@
 
             <span class="text-sm font-medium">Resep Obat</span>
         </a>
+    {% endif %}
         
         {% comment %} Keuangan {% endcomment %}
+    {% if request.user.role == 'admin' or request.user.role == 'staff' and request.user.staff_profile.jabatan == 'Kasir' %}
         <p class="px-4 py-2 text-[10px] font-bold text-white/30 uppercase tracking-widest">Keuangan</p>
 
         <a href="{% url 'metode_pembayaran_index' %}" 
@@ -142,8 +147,10 @@
             </svg>
             <span class="text-sm font-medium">Metode Pembayaran</span>
         </a>
+    {% endif %}
 
         {% comment %} Farmasi {% endcomment %}
+    {% if request.user.role == 'admin' or request.user.role == 'staff' and request.user.staff_profile.jabatan == 'Apoteker' %}
         <p class="px-4 py-2 text-[10px] font-bold text-white/30 uppercase tracking-widest">Farmasi</p>
 
         <a href="{% url 'kategori_obat_index' %}" 
@@ -179,8 +186,10 @@
             </svg>
             <span class="text-sm font-medium">Konfirmasi Resep</span>
         </a>
+    {% endif %}
 
         {% comment %} Account App {% endcomment %}
+    {% if request.user.role in 'admin' %}
         <p class="px-4 py-2 text-[10px] font-bold text-white/30 uppercase tracking-widest">Akun</p>
 
         <a href="{% url 'pasien_index' %}" 
@@ -215,6 +224,7 @@
             </svg>
             <span class="text-sm font-medium">Staff</span>
         </a>
+    {% endif %}
     </nav>
 
     <div class="absolute bottom-0 w-full p-4 border-t border-white/10 bg-[#0c2d48]">
@@ -228,8 +238,8 @@
             </div>
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="text-white/40 hover:text-red-400">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button title="keluar" type="submit" class="text-white/40 hover:text-red-400 cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
                 </button>

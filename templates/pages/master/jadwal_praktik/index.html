@@ -10,9 +10,11 @@
     </div>
     
     <div>
+    {% if request.user.role in 'admin' %}
         <a href="{% url 'jadwal_praktik_create' %}">
             {% include 'components/ui/button.html' with variant='primary' label='+ Tambah Jadwal' %}
         </a>
+    {% endif %}
     </div>
 </div>
 
@@ -40,6 +42,7 @@
                     {{ jadwal.poli.nama_poli }}
                 </p>
 
+                {% if request.user.role in 'admin' %}
                 <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex bg-white/90 backdrop-blur-sm rounded-lg shadow-sm border border-slate-100">
                     <a href="{% url 'jadwal_praktik_edit' jadwal.id %}" class="p-1.5 text-slate-400 hover:text-sky-600 transition-colors" title="Edit">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,6 +56,7 @@
                         </svg>
                     </button>
                 </div>
+                {% endif %}
                 
                 <div class="absolute left-0 top-0 bottom-0 w-1 bg-sky-500 rounded-l-2xl"></div>
             </div>

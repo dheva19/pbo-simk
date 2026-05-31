@@ -3,6 +3,9 @@ from django.db import models
 class KategoriObat(models.Model):
     nama_kategori = models.CharField(max_length=100)
 
+    class Meta:
+        db_table = 'kategori_obat'
+
 class Obat(models.Model):
     nama_obat = models.CharField(max_length=255)
     kode_obat = models.CharField(max_length=10, unique=True)
