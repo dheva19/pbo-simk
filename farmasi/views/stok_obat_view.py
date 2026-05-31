@@ -3,6 +3,7 @@ from django.contrib import messages
 from farmasi.models import Obat
 from farmasi.models import KategoriObat
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 @login_required
 def stok_obat_index(request):
@@ -11,6 +12,9 @@ def stok_obat_index(request):
     context = {
         'daftar_obat': daftar_obat,
         'page_title': 'Stok Obat',
+        'breadcrumbs': [
+            {'name': 'Stok Obat', 'url': reverse('stok_obat_index')},
+        ],
     }
     return render(request, 'pages/farmasi/stok_obat/index.html', context)
 
@@ -46,6 +50,10 @@ def stok_obat_create(request):
     context = {
         'kategori_options': [(d.id, d.nama_kategori) for d in kategori],
         'page_title': 'Tambah Stok Obat',
+        'breadcrumbs': [
+            {'name': 'Stok Obat', 'url': reverse('stok_obat_index')},
+            {'name': 'Tambah Stok', 'url': None},
+        ],
     }
     
     return render(request, 'pages/farmasi/stok_obat/create.html', context)
@@ -83,6 +91,10 @@ def stok_obat_edit(request, id):
         'obat': obat,
         'kategori_options': [(d.id, d.nama_kategori) for d in kategori],
         'page_title': 'Edit Stok Obat',
+        'breadcrumbs': [
+            {'name': 'Stok Obat', 'url': reverse('stok_obat_index')},
+            {'name': 'Edit Stok', 'url': None},
+        ],
     }
     
     return render(request, 'pages/farmasi/stok_obat/edit.html', context)

@@ -49,3 +49,5 @@ start tailwindcss
 ```
 username: admin
 pass: passwordrahasia123
+
+python manage.py seed --clear
