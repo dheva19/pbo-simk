@@ -26,14 +26,7 @@ def login_view(request):
         else:
             messages.error(request, 'Username atau password salah.')
 
-    return render(request, 'pages/auth/login.html', {
-        'left_features': [
-            'Rekam medis elektronik terintegrasi',
-            'Manajemen stok obat & farmasi',
-            'Laporan keuangan real-time',
-            'Penjadwalan dokter & antrian pasien',
-        ]
-    })
+    return render(request, 'pages/auth/login.html')
 
 def register_view(request): 
     if request.user.is_authenticated:
@@ -101,12 +94,6 @@ def register_view(request):
 
     form = PasienForm(request.POST or None)
     context = {
-        'left_features': [
-            'Akses modul sesuai role pengguna',
-            'Data tersimpan aman & terenkripsi',
-            'Notifikasi real-time untuk staf',
-            'Riwayat aktivitas tercatat otomatis',
-        ],
         'jenis_kelamin_options': jenis_kelamin_options,
         'form' : form
     }

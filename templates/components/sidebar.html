@@ -1,16 +1,15 @@
+{% load static %}
 <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-[#0c2d48] text-white transition-transform transform lg:translate-x-0 -translate-x-full flex flex-col" 
     id="main-sidebar">
-    <div class="p-6 flex items-center gap-3 border-b border-white/10">
-        <div class="w-9 h-9 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
-            <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24">
-                <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 3v5h5v2h-5v5h-2v-5H5v-2h5V6h2z"/>
-            </svg>
+    <a href="/" class="p-6 flex items-center gap-3 border-b border-white/10">
+        <div class="w-9 h-9">
+            <img src="{% static 'img/logo.webp' %}" alt="Logo SIMK" class="w-full h-full object-contain">
         </div>
         <div>
             <p class="font-semibold text-sm leading-none uppercase tracking-wider">SIMK</p>
             <p class="text-[9px] text-white/50 mt-1 uppercase">Dashboard Portal</p>
         </div>
-    </div>
+    </a>
 
     <nav class="p-4 space-y-1 flex-1 overflow-y-auto pb-24 custom-scrollbar">
 
