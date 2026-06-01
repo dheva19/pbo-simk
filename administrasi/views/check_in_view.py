@@ -4,8 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from pelayanan.models import Kunjungan
 from accounts.models import Pasien
-from master_data.models import JadwalPraktik
-from administrasi.models import Tiket
+from administrasi.models import Tiket, JadwalPraktik
 from django.urls import reverse
 
 def get_jadwal():

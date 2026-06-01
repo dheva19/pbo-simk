@@ -26,7 +26,7 @@ def login_view(request):
         else:
             messages.error(request, 'Username atau password salah.')
 
-    return render(request, 'pages/auth/login.html')
+    return render(request, 'pages/accounts/auth/login.html')
 
 def register_view(request): 
     if request.user.is_authenticated:
@@ -98,7 +98,7 @@ def register_view(request):
         'form' : form
     }
 
-    return render(request, 'pages/auth/register.html', context)
+    return render(request, 'pages/accounts/auth/register.html', context)
 
 def logout_view(request):
     logout(request)

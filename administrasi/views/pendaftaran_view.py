@@ -3,8 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from pelayanan.models import Kunjungan
-from accounts.models import Pasien
-from master_data.models import JadwalPraktik
+from administrasi.models import JadwalPraktik
 from administrasi.models import Tiket
 from django.urls import reverse
 

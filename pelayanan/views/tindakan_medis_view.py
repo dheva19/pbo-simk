@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from ..models import TindakanMedis
+from pelayanan.models import TindakanMedis
 from django.urls import reverse
 
 @login_required
@@ -14,7 +14,7 @@ def tindakan_medis_index(request):
         ],
         'page_title': 'Tindakan Medis'
     }
-    return render(request, 'pages/master/tindakan_medis/index.html', context)
+    return render(request, 'pages/pelayanan/tindakan_medis/index.html', context)
 
 @login_required
 def tindakan_medis_create(request):
@@ -62,7 +62,7 @@ def tindakan_medis_edit(request, id):
         ],
         'page_title': 'Edit Tindakan Medis'
     }
-    return render(request, 'pages/master/tindakan_medis/edit.html', context)
+    return render(request, 'pages/pelayanan/tindakan_medis/edit.html', context)
 
 @login_required
 def tindakan_medis_delete(request, id):

@@ -4,11 +4,11 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 from accounts.models import User, Dokter, Staff, Pasien
-from master_data.models import Poli, JadwalPraktik, TindakanMedis, MetodePembayaran
-from pelayanan.models import Kunjungan, RekamMedis, TindakanRekamMedis
+from keuangan.models import MetodePembayaran
+from pelayanan.models import TindakanMedis, Kunjungan, RekamMedis, TindakanRekamMedis
 from farmasi.models import KategoriObat, Obat, Resep, DetailResep
 from keuangan.models import Tagihan
-from administrasi.models import Loket
+from administrasi.models import Loket, Poli, JadwalPraktik
 
 
 class Command(BaseCommand):

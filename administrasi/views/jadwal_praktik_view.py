@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from ..models import JadwalPraktik, Poli
+from administrasi.models import JadwalPraktik, Poli
 from accounts.models import Dokter
 from django.urls import reverse
-from ..forms import JadwalForm
+from administrasi.forms import JadwalForm
 
 @login_required
 def jadwal_praktik_index(request):
@@ -23,7 +23,7 @@ def jadwal_praktik_index(request):
         'page_title': 'Jadwal Praktik'
     }
     
-    return render(request, 'pages/master/jadwal_praktik/index.html', context)
+    return render(request, 'pages/administrasi/jadwal_praktik/index.html', context)
 
 @login_required
 def jadwal_praktik_create(request):
@@ -57,7 +57,7 @@ def jadwal_praktik_create(request):
         ],
         'page_title': 'Buat Jadwal Praktik'
     }
-    return render(request, 'pages/master/jadwal_praktik/create.html', context)
+    return render(request, 'pages/administrasi/jadwal_praktik/create.html', context)
 
 @login_required
 def jadwal_praktik_edit(request, id):
@@ -96,7 +96,7 @@ def jadwal_praktik_edit(request, id):
         ],
         'page_title': 'Edit Jadwal Praktik'
     }
-    return render(request, 'pages/master/jadwal_praktik/edit.html', context)
+    return render(request, 'pages/administrasi/jadwal_praktik/edit.html', context)
 
 @login_required
 def jadwal_praktik_delete(request, id):

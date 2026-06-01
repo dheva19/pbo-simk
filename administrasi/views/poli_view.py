@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from ..models import Poli
+from administrasi.models import Poli
 from django.urls import reverse
 
 @login_required
@@ -14,7 +14,7 @@ def poli_index(request):
         ],
         'page_title': 'Manajemen Poli'
     }
-    return render(request, 'pages/master/poli/index.html', context)
+    return render(request, 'pages/administrasi/poli/index.html', context)
 
 @login_required
 def poli_create(request):
@@ -61,7 +61,7 @@ def poli_edit(request, id):
         ],
         'page_title': 'Edit Poli'
     }
-    return render(request, 'pages/master/poli/edit.html', context)
+    return render(request, 'pages/administrasi/poli/edit.html', context)
 
 @login_required
 def poli_delete(request, id):

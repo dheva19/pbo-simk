@@ -1,0 +1,87 @@
+{% extends 'layouts/main.html' %}
+
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800 mb-3">{{ page_title }}</h1>
+        {% include 'components/ui/breadcrumbs.html' %}  
+    </div>
+</div>
+
+<div class="overflow-x-auto">
+    <table id="pasienTable" class="w-full text-sm text-left">
+        <thead>
+            <tr class="text-slate-400 border-b border-slate-100">
+                <th class="pb-4 font-semibold uppercase tracking-wider">No. Invoice</th>
+                <th class="pb-4 font-semibold uppercase tracking-wider min-w-[300px]">Nama Pasien</th>
+                <th class="pb-4 font-semibold uppercase tracking-wider">Grand Total</th>
+                <th class="pb-4 font-semibold uppercase tracking-wider">Tanggal Kunjungan</th>
+                <th class="pb-4 font-semibold uppercase tracking-wider">Tanggal Pembayaran</th>
+                <th class="pb-4 font-semibold uppercase tracking-wider text-center">Aksi</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+            {% for item in data_tagihan %}
+            <tr class="hover:bg-slate-50/50 transition-colors">
+                <td class="py-4">
+                    <p class="font-semibold text-slate-700">
+                        {{ item.nomor_invoice }}
+                    </p>
+                </td>
+                <td class="py-4">
+                    <p class="font-semibold text-slate-700">
+                        {{ item.kunjungan.pasien.user.full_name }}
+                    </p>
+                </td>
+                <td class="py-4 text-slate-600">
+                    <p class="font-semibold text-slate-700">
+                        {{ item.grand_total }}
+                    </p>
+                </td>
+                <td class="py-4">
+                    <p class="font-semibold text-slate-700">
+                        {{ item.kunjungan.tanggal_kunjungan }}
+                    </p>
+                </td>
+                <td class="py-4">
+                    <p class="font-semibold text-slate-700">
+                        {{ item.waktu_pembayaran }}
+                    </p>
+                </td>
+                <td class="py-4">
+                    <div class="flex justify-center items-center gap-2">
+                        <a href="{% url 'keuangan_tagihan_index' %}">
+                            {% include 'components/ui/button.html' with variant='primary' label='Buat Tagihan' %}
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="py-8 text-center text-slate-400 italic">Belum ada data pasien.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% block extra_js %}  
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const dataTable = new simpleDatatables.DataTable("#pasienTable", {
+                searchable: true,
+                perPage: 10,
+                labels: {
+                    placeholder: "Cari Data...",
+                    perPage: "data per halaman",
+                    noRows: "Data tidak ditemukan",
+                    info: "Menampilkan {start} sampai {end} dari {rows} data",
+                },
+                
+            });
+        });
+    </script>
+{% endblock %}
+{% endblock %}

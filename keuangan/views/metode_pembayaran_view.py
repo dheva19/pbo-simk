@@ -14,7 +14,7 @@ def metode_pembayaran_index(request):
         ],
         'page_title': 'Metode Pembayaran'
     }
-    return render(request, 'pages/master/metode_pembayaran/index.html', context)
+    return render(request, 'pages/keuangan/metode_pembayaran/index.html', context)
 
 @login_required
 def metode_pembayaran_create(request):
@@ -57,7 +57,7 @@ def metode_pembayaran_edit(request, id):
         ],
         'page_title': 'Edit Metode Pembayaran'
     }
-    return render(request, 'pages/master/metode_pembayaran/edit.html', context)
+    return render(request, 'pages/keuangan/metode_pembayaran/edit.html', context)
 
 @login_required
 def metode_pembayaran_delete(request, id):
