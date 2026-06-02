@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Tagihan
-from pelayanan.models import Kunjungan 
+from .models import Tagihan, MetodePembayaran
+from pelayanan.models import Kunjungan
 from django.urls import reverse
 
 @login_required
