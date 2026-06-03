@@ -36,7 +36,6 @@ class Migration(migrations.Migration):
                 ('total_biaya_tindakan', models.DecimalField(decimal_places=2, max_digits=12)),
                 ('total_biaya_obat', models.DecimalField(decimal_places=2, max_digits=12)),
                 ('grand_total', models.DecimalField(decimal_places=2, max_digits=12)),
-                ('status_pembayaran', models.CharField(default='belum_lunas', max_length=20)),
                 ('waktu_pembayaran', models.DateTimeField(blank=True, null=True)),
                 ('kasir', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='accounts.staff')),
                 ('kunjungan', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='pelayanan.kunjungan')),
