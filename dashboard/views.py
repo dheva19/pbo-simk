@@ -55,7 +55,10 @@ def dashboard_view(request):
     }
 
     if user.role == "pasien":
-        context['list_tiket'] = Tiket.objects.filter(pasien=user.pasien_profile)
+        context['list_tiket'] = Tiket.objects.filter(
+            pasien=user.pasien_profile, 
+            kunjungan__status="dipesan"
+        )
 
     return render(request, 'pages/dashboard/index.html', context)
 
