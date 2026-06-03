@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from farmasi.models import Resep, DetailResep
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 @login_required
 def konfirmasi_resep_index(request):
-    daftar_resep = Resep.objects.select_related('rekam_medis', 'apoteker').filter(_status='diproses').all()
+    daftar_resep = Resep.objects.select_related('rekam_medis', 'apoteker').filter(status='diproses').all()
     
     context = {
         'daftar_resep': daftar_resep,
@@ -30,7 +31,7 @@ def konfirmasi_resep_confirm(request, id):
     resep = get_object_or_404(Resep, pk=id)
     
     try:
-        resep._status = 'selesai'
+        resep.status = 'selesai'
         resep.save()
         messages.success(request, 'Resep berhasil dikonfirmasi.')
     except Exception as e:

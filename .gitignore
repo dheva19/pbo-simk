@@ -2,6 +2,9 @@
 __pycache__/
 */__pycache__
 */*/__pycache__
+__pycache__/*
+*/__pycache__/*
+*/*/__pycache__/*
 *.py[cod]
 *$py.class
 *.so
@@ -88,3 +91,6 @@ yarn-error.log
 # Backup files
 *.bak
 *.orig
+*.pyc
+*.pyc
+*.py
