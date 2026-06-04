@@ -13,15 +13,21 @@
         {% csrf_token %}
         
         <div class="grid grid-cols-6 gap-x-6 gap-y-4">
+            
             <div class="md:col-span-3 col-span-6 flex flex-col gap-y-4">
                 {% include 'components/ui/input.html' with label="Input Nama" name="nama_obat" type="text" placeholder="Masukkan nama obat" required=True %}
                 
                 {% include 'components/ui/select.html' with label="Kategori Obat" name="kategori" placeholder="-- Select Kategori dari tabel kategori_obat --" required=True options=kategori_options %}
                 
-                {% include 'components/ui/input.html' with label="Input Stock" name="stok" type="number" placeholder="Masukkan jumlah stok" required=True %}
+                <div class="flex flex-col gap-y-2">
+                    <label class="text-sm font-semibold text-slate-600">Kode Obat</label>
+                    <div class="px-4 py-2.5 bg-slate-50 border border-slate-200 text-slate-400 rounded-xl text-sm italic">
+                        [ Otomatis Dibuat Oleh Sistem ]
+                    </div>
+                </div>
             </div>
             
-            <div class="md:col-span-3 col-span-6 flex flex-col gap-y-4">
+            <div class="md:col-span-3 col-span-6 flex flex-col gap-y-4">                
                 {% include 'components/ui/input.html' with label="Input Satuan" name="satuan" type="text" placeholder="Contoh: Tablet, Botol, Pcs" required=True %}
                 
                 {% include 'components/ui/input.html' with label="Input Harga Jual" name="harga" type="number" placeholder="Masukkan harga jual" required=True %}

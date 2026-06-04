@@ -18,15 +18,26 @@
                 
                 {% include 'components/ui/select.html' with label="Kategori Obat" name="kategori" placeholder="-- Select Kategori dari tabel kategori_obat --" required=True options=kategori_options selected_value=obat.kategori_id %}
                 
-                {% include 'components/ui/input.html' with label="Input Stock" name="stok" type="number" placeholder="Masukkan jumlah stok" value=obat.stok required=True %}
+                {% include 'components/ui/input.html' with label="Stok Obat" name="stok" type="number" placeholder="Masukkan jumlah stok" value=obat.stok required=True %}
+                <div>
+                    <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bo   ld mb-1">Dibuat Pada</p>
+                    <p class="text-sm text-slate-600 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                        {{ obat.dibuat_pada|date:"d F Y, H:i" }}
+                    </p>
+                </div>
             </div>
             
             <div class="md:col-span-3 col-span-6 flex flex-col gap-y-4">
                 {% include 'components/ui/input.html' with label="Input Satuan" name="satuan" type="text" placeholder="Contoh: Tablet, Botol, Pcs" value=obat.satuan required=True %}
                 
                 {% include 'components/ui/input.html' with label="Input Harga Jual" name="harga" type="number" placeholder="Masukkan harga jual" value=obat.harga_jual required=True %}
+                <div>
+                    <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1">Terakhir Diperbarui</p>
+                    <p class="text-sm text-slate-600 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                        {{ obat.diperbarui_pada|date:"d F Y, H:i"|default:"-" }}
+                    </p>
+                </div>
             </div>
-
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-6 mt-6 border-t border-slate-100">

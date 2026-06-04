@@ -28,8 +28,7 @@ def stok_obat_create(request):
             harga_jual = request.POST.get('harga')
             satuan = request.POST.get('satuan')
             
-            
-            obat = Obat.objects.create(
+            Obat.objects.create(
                 nama_obat = nama_obat,
                 kategori_id = kategori_id,
                 stok = stok,
@@ -67,7 +66,7 @@ def stok_obat_edit(request, id):
             stok = int(request.POST.get('stok', 0))
             harga_jual = request.POST.get('harga')
             satuan = request.POST.get('satuan')
-            
+
             obat.nama_obat = nama_obat
             obat.kategori_id = kategori
             obat.stok = stok
