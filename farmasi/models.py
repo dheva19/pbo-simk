@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 from accounts.models import TimestampModel
 
 class KategoriObat(TimestampModel):
@@ -10,11 +10,34 @@ class KategoriObat(TimestampModel):
 
 class Obat(TimestampModel):
     nama_obat = models.CharField(max_length=255)
-    kode_obat = models.CharField(max_length=10, unique=True)
+    kode_obat = models.CharField(max_length=20, unique=True)
     kategori = models.ForeignKey(KategoriObat, on_delete=models.CASCADE)
     satuan = models.CharField(max_length=20)
     stok = models.PositiveIntegerField()
     harga_jual = models.DecimalField(max_digits=12, decimal_places=2)
+    created_at = TimestampModel.dibuat_pada
+    updated_at = TimestampModel.diperbarui_pada
+
+    def __generate_kode_obat(self):
+        today_str = timezone.now().strftime('%Y%m%d')
+        prefix = f"OBT-{today_str}-"
+        
+        last_obat = Obat.objects.filter(
+            kode_obat__startswith=prefix
+        ).order_by('-kode_obat').first()
+        
+        if last_obat:
+            last_number = int(last_obat.kode_obat.split('-')[-1])
+            new_number = str(last_number + 1).zfill(3)
+        else:
+            new_number = "001"
+            
+        return f"{prefix}{new_number}"
+
+    def save(self, *args, **kwargs):
+        if not self.kode_obat:
+            self.kode_obat = self.__generate_kode_obat()
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = 'obat'

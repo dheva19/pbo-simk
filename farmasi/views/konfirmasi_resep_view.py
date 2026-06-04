@@ -30,6 +30,15 @@ def konfirmasi_resep_detail(request, id):
 def konfirmasi_resep_confirm(request, id):
     resep = get_object_or_404(Resep, pk=id)
     
+    detailResep = DetailResep.objects.filter(resep=resep)
+    for detail in detailResep:
+        obat = detail.obat  
+        if obat.stok < detail.jumlah_diminta:
+            messages.error(request, f'Stok obat {obat.nama_obat} tidak mencukupi.')
+            return redirect('konfirmasi_resep_index')
+        obat.stok -= detail.jumlah_diminta
+        obat.save()
+
     try:
         resep.status = 'selesai'
         resep.save()
