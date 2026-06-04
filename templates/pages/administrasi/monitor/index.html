@@ -59,7 +59,38 @@
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <script>
     const bellSound = new Audio('https://actions.google.com/sounds/v1/alarms/doorbell.ogg'); 
+    let pollInterval = null;
+    let isMqttConnected = false;
     
+    function updateConnectionStatus(status) {
+        const statusEl = document.getElementById('connectionStatus');
+        if (status === 'error' || status === 'offline') {
+            statusEl.innerHTML = '<span class="inline-block w-2.5 h-2.5 bg-orange-500 rounded-full animate-pulse"></span><span class="text-orange-600">Polling (Fallback)</span>';
+            isMqttConnected = false;
+            startPolling();
+        } else if (status === 'connected') {
+            statusEl.innerHTML = '<span class="inline-block w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span><span class="text-green-600">Terhubung (Live)</span>';
+            isMqttConnected = true;
+            stopPolling();
+        }
+    }
+
+    function startPolling() {
+        if (pollInterval) return; 
+        pollInterval = setInterval(() => {
+            if (!isMqttConnected) {
+                fetchAndRenderDisplay();
+            }
+        }, 2000);
+    }
+
+    function stopPolling() {
+        if (pollInterval) {
+            clearInterval(pollInterval);
+            pollInterval = null;
+        }
+    }
+
     function toggleFullScreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(err => {
@@ -84,15 +115,6 @@
                 if (mainContent) mainContent.classList.add('lg:ml-64');
             }
         });
-
-    function updateConnectionStatus(status) {
-        const statusEl = document.getElementById('connectionStatus');
-        if (status === 'error' || status === 'offline') {
-            statusEl.innerHTML = '<span class="inline-block w-2.5 h-2.5 bg-red-500 rounded-full"></span><span class="text-red-600">Terputus</span>';
-        } else if (status === 'connected') {
-            statusEl.innerHTML = '<span class="inline-block w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span><span class="text-green-600">Terhubung (Live)</span>';
-        }
-    }
 
     function initMQTT() {
         const brokerUrl = '{{ mqtt_url }}'; 

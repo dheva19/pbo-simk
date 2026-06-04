@@ -161,7 +161,7 @@ def rawat_pasien_detail(request, kunjungan_id=None):
                     []
             }
         )
-
+    
     tindakan_list = (
         RawatPasienRepository
         .get_tindakan_list()

@@ -172,7 +172,7 @@
         </a>
     {% endif %}
         
-        {% comment %} Keuangan {% endcomment %}
+{% comment %} Keuangan {% endcomment %}
     {% if request.user.role == 'admin' or request.user.role == 'staff' and request.user.staff_profile.jabatan == 'Kasir' %}
         <p class="px-4 py-2 text-[10px] font-bold text-white/30 uppercase tracking-widest">Keuangan</p>
 
@@ -210,7 +210,7 @@
         </a>
     {% endif %}
 
-        {% comment %} Account App {% endcomment %}
+{% comment %} Account App {% endcomment %}
     {% if request.user.role in 'admin' %}
         <p class="px-4 py-2 text-[10px] font-bold text-white/30 uppercase tracking-widest">Akun</p>
 
