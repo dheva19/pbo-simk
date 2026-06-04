@@ -61,6 +61,13 @@ class ResepService:
     def __init__(self, resep):
         self.resep = resep
 
+    def validate_stock(self, selected_items):
+        for item in selected_items:
+            obat = Obat.objects.get(id=item['obat_id'])
+
+            if obat.stok <= 0:
+                raise ValueError(f'Stok obat {obat.nama_obat} sudah habis.')
+
     def save_resep(self, selected_items):
         DetailResep.objects.filter(resep=self.resep).delete()
 
@@ -180,12 +187,21 @@ def resep_obat_index(request, kunjungan_id=None):
             .extract_post_data(request)
         )
 
-        service = ResepService(resep)
-        service.save_resep(selected_items)
-        kunjungan.move_next_status()
+        try:
+            service = ResepService(resep)
+            service.validate_stock(selected_items)
+            service.save_resep(selected_items)
+            kunjungan.move_next_status()
+            messages.success(request, 'Resep obat berhasil disimpan.')
+            return redirect('resep_obat_index')
 
-        messages.success(request, 'Resep obat berhasil disimpan.')
-        return redirect('resep_obat_index')
+        except ValueError as e:
+            messages.error(request, str(e))
+
+            return redirect(
+                'resep_obat_detail',
+                kunjungan_id=kunjungan.id
+            )
 
     context = {
         'page_title':
