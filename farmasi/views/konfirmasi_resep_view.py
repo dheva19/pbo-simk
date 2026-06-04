@@ -24,6 +24,7 @@ def konfirmasi_resep_detail(request, id):
         'detail_resep': detail_resep,
         'page_title': 'Detail Resep Doker',
     }
+
     return render(request, 'pages/farmasi/konfirmasi_resep/detail.html', context)
 
 @login_required

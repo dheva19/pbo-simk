@@ -3,7 +3,6 @@ from django.db import models
 from django.conf import settings
 from datetime import datetime
 
-# Superclass untuk semua model
 class TimestampModel(models.Model):
     dibuat_pada = models.DateTimeField(auto_now_add=True)
     diperbarui_pada = models.DateTimeField(auto_now=True)
@@ -13,11 +12,9 @@ class TimestampModel(models.Model):
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, full_name, username, email, password=None, **extra_fields):
-        # Normaliasasi email ke lower case
         email = self.normalize_email(email)
         user = self.model(full_name=full_name, username=username, email=email, **extra_fields)
         
-        # hash password sebelum disimpan ke database
         user.set_password(password) 
         user.save(using=self._db)
         return user
@@ -41,9 +38,7 @@ class User(AbstractBaseUser):
     class Meta:
         db_table = 'user'
 
-# Superclass untuk 3 subclass untuk class dokter, pasien, dan staff
 class UserProfileModel(TimestampModel):
-    # Relasi class user
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
@@ -58,12 +53,9 @@ class UserProfileModel(TimestampModel):
     def get_identitas(self):
         raise NotImplementedError(f"{self.__class__.__name__} harus implement _get_identitas()")
     
-    # method protected yang diakses dari subclass
     def _format_no_hp(self):
         if self.no_hp.startswith('0'):
             self.no_hp = '+62' + self.no_hp[1:]
-        elif self.no_hp.startswith('8'):
-            self.no_hp = '+62' + self.no_hp
 
     def save(self, *args, **kwargs):
         self._format_no_hp()
@@ -77,7 +69,6 @@ class Dokter(UserProfileModel):
     class Meta:
         db_table = 'dokter'
 
-    # Overide method dari superclass UserProfileModel
     def get_identitas(self):
         return f"{self.user.full_name} (Dokter {self.spesialisasi})"
     
@@ -117,7 +108,6 @@ class Pasien(UserProfileModel):
         
         super().save(*args, **kwargs)
 
-    # Method private yang hanya di panggil di class Pasien sendiri
     def __generate_nomor_rm(self):
         today_str = datetime.now().strftime('%Y%m%d')
         prefix = f"RM-{today_str}-"

@@ -70,14 +70,13 @@ class TindakanMedis(TimestampModel):
 
     def save(self, *args, **kwargs):
         if not self.kode_tindakan:
-            self.kode_tindakan = (self.generate_kode_tindakan())
+            self.kode_tindakan = (self.__generate_kode_tindakan())
 
         super().save(*args, **kwargs)
 
-    @classmethod
-    def generate_kode_tindakan(cls):
+    def __generate_kode_tindakan(self):
         prefix = "TND-"
-        last_instance = cls.objects.order_by('-id').first()
+        last_instance = TindakanMedis.objects.order_by('-id').first()
 
         if (last_instance and last_instance.kode_tindakan):
             try:

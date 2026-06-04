@@ -96,7 +96,7 @@ Sistem SIMK menerapkan prinsip-prinsip Object-Oriented Programming dalam desain 
 
 ### 1. **Inheritance (Pewarisan)**
 
-#### a. Abstract Base Model - `TimestampModel`
+#### a. Model Abstrak Superclass - `TimestampModel`
 Model abstrak yang digunakan sebagai base class untuk sebagian besar model dalam sistem:
 ```python
 class TimestampModel(models.Model):
@@ -109,15 +109,14 @@ class TimestampModel(models.Model):
 - Semua model (Poli, JadwalPraktik, Tiket, Loket, TindakanMedis, Kunjungan, dll) mewarisi dari `TimestampModel`
 - Memberikan audit trail otomatis untuk setiap entitas yang dibuat atau diperbarui
 
-#### b. User Profile Hierarchy
+#### b. Hirarki User Profile
 Hierarki inheritance untuk profil pengguna di `accounts/models.py`:
 ```python
-class UserProfileModel(TimestampModel):  # Base class abstrak
-    # Shared fields dan methods
+class UserProfileModel(TimestampModel): # Superclass
 
-class Dokter(UserProfileModel):          # Specialized class
-class Staff(UserProfileModel):           # Specialized class  
-class Pasien(UserProfileModel):          # Specialized class
+class Dokter(UserProfileModel):# Subclass
+class Staff(UserProfileModel): # Subclass  
+class Pasien(UserProfileModel):# Subclass
 ```
 - Setiap role memiliki atribut unik (spesialisasi dokter, jabatan staff, nomor rekam medis pasien)
 - Implementasi polymorphism melalui method override `get_identitas()` di setiap subclass
@@ -138,19 +137,19 @@ class RekamMedis(BaseMedicalRecord):
 #### a. Workflow Pattern dengan Polymorphism
 Implementasi polymorphism dalam status workflow (`pelayanan/models.py`):
 ```python
-class StatusWorkflow:                    # Base class (interface)
-    def next_status(self):
+class StatusWorkflow: # Superclass
+    def next_status(self): # Method Abstrak (harus implementasi pada subclass)
         raise NotImplementedError
 
-class DiprosesWorkflow(StatusWorkflow): # Concrete implementation
+class DiprosesWorkflow(StatusWorkflow): # Override method 
     def next_status(self):
         return 'rawat'
 
-class RawatWorkflow(StatusWorkflow):    # Concrete implementation
+class RawatWorkflow(StatusWorkflow):    # Override method 
     def next_status(self):
         return 'resep'
 
-class ResepWorkflow(StatusWorkflow):    # Concrete implementation
+class ResepWorkflow(StatusWorkflow):    # Override method 
     def next_status(self):
         return 'selesai'
 ```
@@ -196,14 +195,14 @@ class KunjunganManager(models.Manager):
 Penggunaan private methods (prefix `__`) untuk operasi internal:
 - `Pasien.__generate_nomor_rm()` - generate nomor rekam medis
 - `Tiket.__generate_no_tiket()` - generate nomor tiket
-- `TindakanMedis.generate_kode_tindakan()` - generate kode tindakan
+- `TindakanMedis.__generate_kode_tindakan()` - generate kode tindakan
 - `Obat.__generate_kode_obat()` - generate kode obat
 - `Tagihan.__generate_nomor_invoice()` - generate nomor invoice
 
 #### c. Auto-Formatting pada Save
 Method `save()` di `UserProfileModel` untuk auto-format nomor HP:
 ```python
-def _format_no_hp(self):
+def _format_no_hp(self): # Protected Method
     if self.no_hp.startswith('0'):
         self.no_hp = '+62' + self.no_hp[1:]
 
@@ -224,15 +223,15 @@ Mengabstraksi logic kompleks sebagai property sederhana:
 ```python
 @property
 def umur(self):  # Pasien model
-    # Calculate age from tanggal_lahir
+    # Menghitung umur dari tanggal_lahir
     
 @property
 def kode_antrean(self):  # Kunjungan model
-    # Generate queue code from poli + nomor antrean
+    # generate kode antrean dari poli + nomor antrean
     
 @property
 def jadwal_lengkap(self):  # JadwalPraktik model
-    # Format jadwal schedule as readable string
+    # Format jadwal lengkap hari + jam_mulai + jam_selesai
 ```
 
 ---
