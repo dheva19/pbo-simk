@@ -380,7 +380,7 @@ class Command(BaseCommand):
                 total_biaya_obat=total_obat,
                 grand_total=grand_total,
                 metode_bayar=metode_pembayaran,
-                status_pembayaran='lunas',
+                # status_pembayaran='lunas',
                 waktu_pembayaran=timezone.now()
             )
         
