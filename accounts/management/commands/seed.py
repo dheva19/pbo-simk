@@ -35,10 +35,6 @@ class Command(BaseCommand):
         self.seed_jadwal_praktik()
         self.seed_kategori_obat()
         self.seed_obat()
-        self.seed_kunjungan()
-        self.seed_rekam_medis()
-        self.seed_resep()
-        self.seed_tagihan()
         self.seed_loket()
 
         self.stdout.write(self.style.SUCCESS('✅ Database seeding selesai!'))
@@ -269,17 +265,16 @@ class Command(BaseCommand):
         kategori_list = KategoriObat.objects.all()
         
         obat_data = [
-            ('Paracetamol', 'OBT-001', 0, 'Tablet', 100, Decimal('2500.00')),
-            ('Amoxicillin', 'OBT-002', 1, 'Kaplet', 50, Decimal('5000.00')),
-            ('Ibuprofen', 'OBT-003', 2, 'Tablet', 75, Decimal('3500.00')),
-            ('Vitamin C', 'OBT-004', 3, 'Tablet', 200, Decimal('1500.00')),
-            ('Metronidazole', 'OBT-005', 1, 'Tablet', 60, Decimal('4000.00')),
+            ('Paracetamol', 0, 'Tablet', 100, Decimal('2500.00')),
+            ('Amoxicillin', 1, 'Kaplet', 50, Decimal('5000.00')),
+            ('Ibuprofen', 2, 'Tablet', 75, Decimal('3500.00')),
+            ('Vitamin C', 3, 'Tablet', 200, Decimal('1500.00')),
+            ('Metronidazole', 1, 'Tablet', 60, Decimal('4000.00')),
         ]
         
-        for nama, kode, kategori_idx, satuan, stok, harga in obat_data:
+        for nama, kategori_idx, satuan, stok, harga in obat_data:
             Obat.objects.create(
                 nama_obat=nama,
-                kode_obat=kode,
                 kategori=kategori_list[kategori_idx],
                 satuan=satuan,
                 stok=stok,
@@ -288,108 +283,10 @@ class Command(BaseCommand):
         
         self.stdout.write(self.style.SUCCESS('✓ Obat berhasil dibuat'))
 
-    def seed_kunjungan(self):
-        self.stdout.write('👥 Membuat Kunjungan...')
-        
-        pasien_list = Pasien.objects.filter(user__isnull=False)
-        jadwal_list = JadwalPraktik.objects.all()
-        
-        if pasien_list.exists() and jadwal_list.exists():
-            for i, pasien in enumerate(pasien_list):
-                jadwal = jadwal_list[i % len(jadwal_list)]
-                tanggal = timezone.now().date() + timedelta(days=i)
-                
-                kunjungan = Kunjungan.objects.create(
-                    pasien=pasien,
-                    jadwal=jadwal,
-                    tanggal_kunjungan=tanggal,
-                    nomor_antrean=i + 1,
-                    status='diproses'
-                )
-        
-        self.stdout.write(self.style.SUCCESS('✓ Kunjungan berhasil dibuat'))
-
-    def seed_rekam_medis(self):
-        self.stdout.write('📋 Membuat Rekam Medis...')
-        
-        kunjungan_list = Kunjungan.objects.all()
-        tindakan_list = TindakanMedis.objects.all()
-        
-        for kunjungan in kunjungan_list:
-            rekam_medis = RekamMedis.objects.create(
-                kunjungan=kunjungan,
-                keluhan='Demam dan batuk',
-                diagnosa='Influenza',
-                tekanan_darah='120/80',
-                suhu_tubuh=Decimal('37.5')
-            )
-            
-            # Tambah 2 tindakan ke rekam medis
-            for tindakan in tindakan_list[:2]:
-                TindakanRekamMedis.objects.create(
-                    rekam_medis=rekam_medis,
-                    tindakan_medis=tindakan
-                )
-        
-        self.stdout.write(self.style.SUCCESS('✓ Rekam Medis berhasil dibuat'))
-
-    def seed_resep(self):
-        self.stdout.write('💊 Membuat Resep...')
-        
-        rekam_medis_list = RekamMedis.objects.all()
-        staff_apoteker = Staff.objects.filter(jabatan='Apoteker').first()
-        obat_list = Obat.objects.all()
-        
-        for rekam_medis in rekam_medis_list:
-            resep = Resep.objects.create(
-                rekam_medis=rekam_medis,
-                apoteker=staff_apoteker,
-                status='diproses'
-            )
-            
-            # Tambah detail resep
-            for obat in obat_list[:2]:
-                subtotal = obat.harga_jual * 5
-                DetailResep.objects.create(
-                    resep=resep,
-                    obat=obat,
-                    jumlah_diminta=5,
-                    dosis_aturan='3x sehari',
-                    subtotal_harga=subtotal
-                )
-        
-        self.stdout.write(self.style.SUCCESS('✓ Resep berhasil dibuat'))
-
-    def seed_tagihan(self):
-        self.stdout.write('💰 Membuat Tagihan...')
-        
-        kunjungan_list = Kunjungan.objects.all()
-        kasir = Staff.objects.filter(jabatan='Kasir').first()
-        metode_pembayaran = MetodePembayaran.objects.first()
-        
-        for i, kunjungan in enumerate(kunjungan_list):
-            total_tindakan = Decimal('100000.00')
-            total_obat = Decimal('50000.00')
-            grand_total = total_tindakan + total_obat
-            
-            Tagihan.objects.create(
-                nomor_invoice=f'INV-{timezone.now().strftime("%Y%m%d")}-{str(i+1).zfill(3)}',
-                kunjungan=kunjungan,
-                kasir=kasir,
-                total_biaya_tindakan=total_tindakan,
-                total_biaya_obat=total_obat,
-                grand_total=grand_total,
-                metode_bayar=metode_pembayaran,
-                status_pembayaran='lunas',
-                waktu_pembayaran=timezone.now()
-            )
-        
-        self.stdout.write(self.style.SUCCESS('✓ Tagihan berhasil dibuat'))
-
     def seed_loket(self):
         self.stdout.write('🪟 Membuat Loket...')
         
-        staff_list = Staff.objects.filter(jabatan__in=['Perawat'])
+        staff_list = Staff.objects.filter(jabatan__in=['Administrasi'])
         kunjungan = Kunjungan.objects.first()
         
         for i, staff in enumerate(staff_list):

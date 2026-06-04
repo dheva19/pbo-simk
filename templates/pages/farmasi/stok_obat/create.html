@@ -13,7 +13,6 @@
         {% csrf_token %}
         
         <div class="grid grid-cols-6 gap-x-6 gap-y-4">
-            
             <div class="md:col-span-3 col-span-6 flex flex-col gap-y-4">
                 {% include 'components/ui/input.html' with label="Input Nama" name="nama_obat" type="text" placeholder="Masukkan nama obat" required=True %}
                 
@@ -23,8 +22,6 @@
             </div>
             
             <div class="md:col-span-3 col-span-6 flex flex-col gap-y-4">
-                {% include 'components/ui/input.html' with label="Input Kode Obat" name="kode_obat" type="text" placeholder="Masukkan kode obat" required=True %}
-                
                 {% include 'components/ui/input.html' with label="Input Satuan" name="satuan" type="text" placeholder="Contoh: Tablet, Botol, Pcs" required=True %}
                 
                 {% include 'components/ui/input.html' with label="Input Harga Jual" name="harga" type="number" placeholder="Masukkan harga jual" required=True %}

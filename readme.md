@@ -16,31 +16,36 @@ Sistem Informasi Manajemen Klinik (SIMK) adalah aplikasi berbasis web yang diban
 ## ⭐ Fitur Utama
 
 ### 1. **Manajemen Akun & Autentikasi**
-   - Login, Register & Logout
-   - Manajemen akun staff, dokter, & pasien
-   - Pembatasan hak akses berdasarkan role
+   1)	Sistem login dan registrasi pengguna
+   2)	Manajemen data pasien, dokter, staff (create, read, update, delete)
+   3)	Pembatasan hak akses berdasarkan role
+   4)	Halaman dashboard setiap role
 
 ### 2. **Administrasi**
-   - Manajemen poli
-   - Manajemen jadwal praktik
-   - Manajemen loket
-   - Sistem tiket & antrean pasien
+   1)	Pendaftaran online: Pasien dapat mendaftar secara online
+   2)	Check-in: proses check-in pasien (online & offline)
+   3)	Manajemen data loket (create, read, update, delete)
+   4)	Sistem antrean dan pemanggilan pasien berdasarkan antrean
+   5)	Display monitor untuk menampilkan antrean saat ini
+
 
 ### 3. **Pelayanan**
-   - Manajemen tindakan
-   - Form pelayanan dokter 
-   - Resep obat
+   1)	Manajemen data tindakan (create, read, update, delete)
+   2)	Form Pelayanan: input data keluhan & diagnosa
+   3)	Pembuatan resep obat: input data obat
+
 
 ### 4. **Farmasi**
-   - Manajemen kategori obat
-   - Manajemen stok obat
-   - Konfirmasi resep dokter
+   1)	Manajement kategori obat (create, read, update, delete)
+   2)	Manajemen stok obat (create, read, update, delete)
+   3)	Konfirmasi dan validasi resep dari dokter
+
 
 ### 5. **Keuangan**
-   - Manajemen metode pembayaran
-   - Pembayaran tagihan pasien
-   - Generate Invoice pembayaran
-   - Riwayat pembayaran pasien
+   1)	Manajemen metode pembayaran (create, read, update, delete)
+   2)	Create data tagihan pasien (generate invoice)
+   3)	Riwayat pembayaran pasien
+
 
 
 ## 🚀 Cara Menjalankan Project
@@ -87,7 +92,148 @@ http://localhost:8000
 
 ## 🏗️ Implementasi OOP (Object-Oriented Programming)
 
-*Dokumentasi implementasi OOP akan ditambahkan setelah dilakukan perbaikan penerapan PBO pada model.*
+Sistem SIMK menerapkan prinsip-prinsip Object-Oriented Programming dalam desain model data Django. Berikut penjelasan implementasinya:
+
+### 1. **Inheritance (Pewarisan)**
+
+#### a. Abstract Base Model - `TimestampModel`
+Model abstrak yang digunakan sebagai base class untuk sebagian besar model dalam sistem:
+```python
+class TimestampModel(models.Model):
+    dibuat_pada = models.DateTimeField(auto_now_add=True)
+    diperbarui_pada = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        abstract = True
+```
+- Semua model (Poli, JadwalPraktik, Tiket, Loket, TindakanMedis, Kunjungan, dll) mewarisi dari `TimestampModel`
+- Memberikan audit trail otomatis untuk setiap entitas yang dibuat atau diperbarui
+
+#### b. User Profile Hierarchy
+Hierarki inheritance untuk profil pengguna di `accounts/models.py`:
+```python
+class UserProfileModel(TimestampModel):  # Base class abstrak
+    # Shared fields dan methods
+
+class Dokter(UserProfileModel):          # Specialized class
+class Staff(UserProfileModel):           # Specialized class  
+class Pasien(UserProfileModel):          # Specialized class
+```
+- Setiap role memiliki atribut unik (spesialisasi dokter, jabatan staff, nomor rekam medis pasien)
+- Implementasi polymorphism melalui method override `get_identitas()` di setiap subclass
+
+#### c. Medical Record Base - `BaseMedicalRecord`
+Abstract base class untuk records medis di `pelayanan/models.py`:
+```python
+class BaseMedicalRecord(TimestampModel):
+    def validate_data(self):
+        raise NotImplementedError('Subclass harus mengimplementasikan validate_data()')
+
+class RekamMedis(BaseMedicalRecord):
+    # Mengimplementasikan validate_data()
+```
+
+### 2. **Polymorphism (Polimorfisme)**
+
+#### a. Workflow Pattern dengan Polymorphism
+Implementasi polymorphism dalam status workflow (`pelayanan/models.py`):
+```python
+class StatusWorkflow:                    # Base class (interface)
+    def next_status(self):
+        raise NotImplementedError
+
+class DiprosesWorkflow(StatusWorkflow): # Concrete implementation
+    def next_status(self):
+        return 'rawat'
+
+class RawatWorkflow(StatusWorkflow):    # Concrete implementation
+    def next_status(self):
+        return 'resep'
+
+class ResepWorkflow(StatusWorkflow):    # Concrete implementation
+    def next_status(self):
+        return 'selesai'
+```
+- Model `Kunjungan` menggunakan workflow yang sesuai dengan status:
+```python
+def get_workflow(self):
+    workflows = {
+        self.STATUS_DIPROSES: DiprosesWorkflow(),
+        self.STATUS_RAWAT: RawatWorkflow(),
+        self.STATUS_RESEP: ResepWorkflow(),
+    }
+    return workflows.get(self.status)
+
+def move_next_status(self):
+    workflow = self.get_workflow()
+    if workflow:
+        self.status = workflow.next_status()
+        self.save()
+```
+
+#### b. Method Override
+Setiap subclass override method `get_identitas()` dengan implementasi unik:
+- Dokter: menampilkan nama + spesialisasi
+- Staff: menampilkan nama + jabatan
+- Pasien: menampilkan nomor rekam medis + nama
+
+### 3. **Encapsulation (Enkapsulasi)**
+
+#### a. Manager Pattern - `KunjunganManager`
+Encapsulation logic database query dalam custom manager (`pelayanan/models.py`):
+```python
+class KunjunganManager(models.Manager):
+    def antrean_dokter(self, dokter):
+        return self.select_related(...).filter(jadwal__dokter=dokter)
+    
+    def antrean_rawat(self, dokter):
+        return self.antrean_dokter(dokter).filter(status__in=['diproses', 'rawat', 'resep'])
+```
+- Menyembunyikan kompleksitas query logic
+- Memberikan interface yang clean dan reusable
+
+#### b. Private Methods
+Penggunaan private methods (prefix `__`) untuk operasi internal:
+- `Pasien.__generate_nomor_rm()` - generate nomor rekam medis
+- `Tiket.__generate_no_tiket()` - generate nomor tiket
+- `TindakanMedis.generate_kode_tindakan()` - generate kode tindakan
+- `Obat.__generate_kode_obat()` - generate kode obat
+- `Tagihan.__generate_nomor_invoice()` - generate nomor invoice
+
+#### c. Auto-Formatting pada Save
+Method `save()` di `UserProfileModel` untuk auto-format nomor HP:
+```python
+def _format_no_hp(self):
+    if self.no_hp.startswith('0'):
+        self.no_hp = '+62' + self.no_hp[1:]
+
+def save(self, *args, **kwargs):
+    self._format_no_hp()
+    super().save(*args, **kwargs)
+```
+
+### 4. **Abstraction (Abstraksi)**
+
+#### a. Abstract Base Classes
+- `TimestampModel` - abstraksi untuk timestamp fields
+- `UserProfileModel` - abstraksi untuk profil pengguna
+- `BaseMedicalRecord` - abstraksi untuk validasi medical records
+
+#### b. Property Decorators
+Mengabstraksi logic kompleks sebagai property sederhana:
+```python
+@property
+def umur(self):  # Pasien model
+    # Calculate age from tanggal_lahir
+    
+@property
+def kode_antrean(self):  # Kunjungan model
+    # Generate queue code from poli + nomor antrean
+    
+@property
+def jadwal_lengkap(self):  # JadwalPraktik model
+    # Format jadwal schedule as readable string
+```
 
 ---
 
@@ -140,7 +286,8 @@ http://localhost:8000
 | | |
 |---|---|
 | ![Apoteker 1](screenshoot/staff/apoteker/1.png) | ![Apoteker 2](screenshoot/staff/apoteker/2.png) |
-| ![Apoteker 3](screenshoot/staff/apoteker/3.png) | ![Apoteker 4](screenshoot/staff/apoteker/4.png) |![Apoteker 5](screenshoot/staff/apoteker/5.png) | |
+| ![Apoteker 3](screenshoot/staff/apoteker/3.png) | ![Apoteker 4](screenshoot/staff/apoteker/4.png) 
+| ![Apoteker 5](screenshoot/staff/apoteker/5.png) | |
 
 **Fitur:** Kelola kategori obat, kelola stok obat, konfirmasi resep dokter
 

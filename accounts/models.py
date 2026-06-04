@@ -3,7 +3,7 @@ from django.db import models
 from django.conf import settings
 from datetime import datetime
 
-# Master class pencatatan waktu (dipakai di semua class)
+# Superclass untuk semua model
 class TimestampModel(models.Model):
     dibuat_pada = models.DateTimeField(auto_now_add=True)
     diperbarui_pada = models.DateTimeField(auto_now=True)
@@ -11,23 +11,17 @@ class TimestampModel(models.Model):
     class Meta:
         abstract = True
 
-
-
-# Class untuk handle custom create_user
 class CustomUserManager(BaseUserManager):
     def create_user(self, full_name, username, email, password=None, **extra_fields):
-        # Normalisasi email ke lower case
+        # Normaliasasi email ke lower case
         email = self.normalize_email(email)
         user = self.model(full_name=full_name, username=username, email=email, **extra_fields)
         
-        # Set password supaya di hash dulu sebelum disimpan ke database
+        # hash password sebelum disimpan ke database
         user.set_password(password) 
         user.save(using=self._db)
         return user
     
-
-
-# Class user untuk login (semua role pakai class ini)
 class User(AbstractBaseUser):
     ROLE_CHOICES = (
         ('admin', 'Admin'),
@@ -47,27 +41,24 @@ class User(AbstractBaseUser):
     class Meta:
         db_table = 'user'
 
-
-
-# Master class untuk identitas user
-class BaseUserProfile(TimestampModel):
-    # Relasi ke tabel user
+# Superclass untuk 3 subclass untuk class dokter, pasien, dan staff
+class UserProfileModel(TimestampModel):
+    # Relasi class user
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
-        # Pemanggilan relasi user ke class masing masing role (cnth: dokter_profile, staff_profile, dokter_profile)
         related_name='%(class)s_profile' 
     )
     no_hp = models.CharField(max_length=15)
     alamat = models.TextField()
 
     class Meta:
-        abstract = True
+        abstract = True 
 
-    # method abstrak harus di terapkan di semua subclass
     def get_identitas(self):
-        raise NotImplementedError(f"{self.__class__.__name__} harus implement get_identitas()")
+        raise NotImplementedError(f"{self.__class__.__name__} harus implement _get_identitas()")
     
+    # method protected yang diakses dari subclass
     def _format_no_hp(self):
         if self.no_hp.startswith('0'):
             self.no_hp = '+62' + self.no_hp[1:]
@@ -78,10 +69,7 @@ class BaseUserProfile(TimestampModel):
         self._format_no_hp()
         super().save(*args, **kwargs)
 
-
-
-# class untuk profil user dengan role dokter
-class Dokter(BaseUserProfile):
+class Dokter(UserProfileModel):
     spesialisasi = models.CharField(max_length=100)
     nomor_sip = models.CharField(max_length=50)
     tarif_jasa = models.DecimalField(max_digits=12, decimal_places=2)
@@ -89,13 +77,11 @@ class Dokter(BaseUserProfile):
     class Meta:
         db_table = 'dokter'
 
+    # Overide method dari superclass UserProfileModel
     def get_identitas(self):
         return f"{self.user.full_name} (Dokter {self.spesialisasi})"
     
-
-
-# class untuk profil user dengan role staff
-class Staff(BaseUserProfile):
+class Staff(UserProfileModel):
     jabatan = models.CharField(max_length=50)
     shift_kerja = models.CharField(max_length=50)
 
@@ -105,10 +91,7 @@ class Staff(BaseUserProfile):
     def get_identitas(self):
         return f"{self.user.full_name} ({self.jabatan})"
     
-
-
-# class untuk profil user dengan role pasien
-class Pasien(BaseUserProfile):
+class Pasien(UserProfileModel):
     nomor_rekam_medis = models.CharField(max_length=20, unique=True)
     nik = models.CharField(max_length=20, unique=True)
     tanggal_lahir = models.DateField()
@@ -128,16 +111,14 @@ class Pasien(BaseUserProfile):
             (today.month, today.day) < (self.tanggal_lahir.month, self.tanggal_lahir.day)
         )
 
-    # override method class model untuk mengisi otomatis nomor_rekam_medis saat save/create pasien
     def save(self, *args, **kwargs):
         if not self.nomor_rekam_medis:
             self.nomor_rekam_medis = self.__generate_nomor_rm()
         
         super().save(*args, **kwargs)
 
-    # Method private dipanggil ketika pembuatan user baru
+    # Method private yang hanya di panggil di class Pasien sendiri
     def __generate_nomor_rm(self):
-        # Format nomor_rm prefix(RM-tanggal hari ini) + jumlah pasien yg daftar hari ini
         today_str = datetime.now().strftime('%Y%m%d')
         prefix = f"RM-{today_str}-"
         

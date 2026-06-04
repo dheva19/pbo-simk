@@ -23,7 +23,6 @@ def stok_obat_create(request):
     if request.method == "POST":
         try:
             nama_obat = request.POST.get('nama_obat')
-            kode_obat = request.POST.get('kode_obat')
             kategori_id = request.POST.get('kategori')
             stok = int(request.POST.get('stok', 0))
             harga_jual = request.POST.get('harga')
@@ -33,7 +32,6 @@ def stok_obat_create(request):
             obat = Obat.objects.create(
                 nama_obat = nama_obat,
                 kategori_id = kategori_id,
-                kode_obat = kode_obat,
                 stok = stok,
                 harga_jual = harga_jual,
                 satuan = satuan,
@@ -65,14 +63,12 @@ def stok_obat_edit(request, id):
     if request.method == "POST":
         try:
             nama_obat = request.POST.get('nama_obat')
-            kode_obat = request.POST.get('kode_obat')
             kategori = request.POST.get('kategori')
             stok = int(request.POST.get('stok', 0))
             harga_jual = request.POST.get('harga')
             satuan = request.POST.get('satuan')
             
             obat.nama_obat = nama_obat
-            obat.kode_obat = kode_obat
             obat.kategori_id = kategori
             obat.stok = stok
             obat.harga_jual = harga_jual

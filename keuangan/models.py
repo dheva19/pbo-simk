@@ -30,7 +30,6 @@ class Tagihan(TimestampModel):
 
     @classmethod
     def __generate_nomor_invoice(cls):
-        # Format: INV-20260530-0001
         hari_ini = timezone.now().date()
         tanggal_str = hari_ini.strftime('%Y%m%d')
         prefix = f"INV-{tanggal_str}-"
